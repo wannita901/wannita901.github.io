@@ -1,6 +1,14 @@
-# wannita901.github.io
+# wannita901-site (draft of wannita901.github.io)
 
-Personal site. Astro, plain CSS, GitHub Pages. Push to `main` deploys.
+Personal site. Astro, plain CSS, GitHub Pages.
+
+**Status: draft, unpublished.** Repo is private and renamed so the live URL is down.
+
+## Release checklist (when ready)
+
+1. `gh repo rename wannita901.github.io` (from this repo) and `gh repo edit --visibility public --accept-visibility-change-consequences`.
+2. Repo Settings → Pages → Source: **GitHub Actions** (or `gh api -X POST repos/wannita901/wannita901.github.io/pages -f build_type=workflow`).
+3. In `.github/workflows/deploy.yml` change `on:` to `push: { branches: [main] }`, commit, push. First deploy takes ~1 min.
 
 ## Add things
 
@@ -35,19 +43,18 @@ One sentence about it.
 
 **Paper** → append a BibTeX entry to `src/data/publications.bib`. Extra fields the site understands: `venue` (display string), `selected = {true}` (home page), and link fields `pdf, arxiv, doi, code, models, blog, slides`.
 
-**Event / news / talk** → new file `src/content/events/<yyyy-mm-dd>-<slug>.md`
+**Service / "Latest" item** → new file `src/content/events/<yyyy-mm-dd>-<slug>.md`
 
 ```md
 ---
 date: 2026-10-01
-type: talk           # talk | panel | meetup | news | service | hackathon
-title: "Talk: ... at ..."
+title: "PC member, MSR 2027"
 link: https://...
 ---
 ```
 
-**Bio, CV rows, socials** → `src/pages/about.astro`, `src/data/cv.ts`, `src/site.ts`.
-**CV PDF** → replace `public/cv.pdf`. **Avatar** → replace `public/avatar.svg` (or `.png`, then update `<img src>` in `src/pages/index.astro` and `about.astro`).
+**Bio, "outside work" line, supervision text, social links** → `src/site.ts`. To re-enable X, uncomment its line there.
+**Avatar** → replace `public/avatar.svg` (or `.png`, then update `<img src>` in `src/pages/index.astro`).
 
 ## Run locally (optional)
 

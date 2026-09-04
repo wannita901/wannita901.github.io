@@ -5,6 +5,7 @@ import ProjectRow from '../components/ProjectRow.astro';
 import PubEntry from '../components/PubEntry.astro';
 import EventRow from '../components/EventRow.astro';
 import ComingSoon from '../components/ComingSoon.astro';
+import SocialLinks from '../components/SocialLinks.astro';
 import { getCollection } from 'astro:content';
 import { loadPublications } from '../lib/bib';
 import { site } from '../site';
@@ -12,7 +13,7 @@ import { site } from '../site';
 const posts = (await getCollection('blog', (p) => !p.data.draft)).sort((a, b) => +b.data.date - +a.data.date).slice(0, 3);
 const projects = (await getCollection('projects', (p) => p.data.home)).sort((a, b) => a.data.order - b.data.order);
 const pubs = loadPublications().filter((p) => p.selected);
-const events = (await getCollection('events')).sort((a, b) => +b.data.date - +a.data.date).slice(0, 3);
+const events = (await getCollection('events')).sort((a, b) => +b.data.date - +a.data.date);
 const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year: 'numeric' });
 ---
 <BaseLayout>
@@ -21,8 +22,8 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
     <div class="stack" style="gap: 16px;">
       <h1 style="font-size: 44px;">{site.name}</h1>
       <p class="fg2" style="font-size: 19px; line-height: 1.55;">{site.bio}</p>
-      <p class="muted" style="font-size: 16px;"><span class="mono">now</span>&nbsp; {site.now}</p>
-      <div class="links">{site.socials.map((s) => <a href={s.href}>{s.label}</a>)}</div>
+      <p class="muted" style="font-size: 16px;">{site.outside}</p>
+      <SocialLinks />
     </div>
   </header>
 
@@ -40,12 +41,23 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
     <div class="stack" style="gap: 10px;">{projects.map((p) => <ProjectRow project={p} />)}</div>
   </Section>
 
-  <Section title="Selected papers" more={{ label: 'All papers', href: '/publications/' }}>
+  <Section title="Publications" more={{ label: 'All papers', href: '/publications/' }}>
     <div class="stack" style="gap: 14px;">{pubs.map((p) => <PubEntry pub={p} />)}</div>
   </Section>
 
-  <Section title="Latest" more={{ label: 'All events', href: '/about/#events' }}>
+  <Section title="Latest">
     <div class="stack" style="gap: 8px;">{events.map((e) => <EventRow event={e} />)}</div>
+  </Section>
+
+  <Section title="Supervision">
+    <p class="fg2">{site.supervision}</p>
+  </Section>
+
+  <Section title="Contact">
+    <div class="stack" style="gap: 12px;">
+      <p class="fg2">Fastest is email: <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+      <SocialLinks />
+    </div>
   </Section>
 </BaseLayout>
 <style>

@@ -1,14 +1,13 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-interface Props { event: CollectionEntry<'events'>; showType?: boolean; }
-const { event: e, showType = true } = Astro.props;
+interface Props { event: CollectionEntry<'events'>; }
+const { event: e } = Astro.props;
 const d = e.data.date.toISOString().slice(0, 7);
 ---
 <div class="ev">
   <span class="mono d">{d}</span>
   <span>
     {e.data.link ? <a href={e.data.link}>{e.data.title}</a> : e.data.title}
-    {showType && <span class="tag" style="margin-left: 8px;">{e.data.type}</span>}
   </span>
 </div>
 <style>

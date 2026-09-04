@@ -28,7 +28,6 @@ const events = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/events' }),
   schema: z.object({
     date: z.coerce.date(),
-    type: z.enum(['talk', 'panel', 'meetup', 'news', 'service', 'hackathon']),
     title: z.string(),
     link: z.string().url().optional(),
   }),
