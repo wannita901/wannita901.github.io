@@ -1,0 +1,21 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props { project: CollectionEntry<'projects'>; }
+const { project: p } = Astro.props;
+const links = Object.entries(p.data.links);
+const primary = links[0]?.[1];
+---
+<div class="proj">
+  <span class="emo">{p.data.emoji}</span>
+  <span>
+    {primary ? <a href={primary} class="plain"><b>{p.data.name}</b></a> : <b>{p.data.name}</b>}: {p.body?.trim()}
+    {links.length > 0 && <span class="lnks">{links.map(([label, href], i) => (<>{i > 0 && ' · '}<a href={href} class="lnk">{label}</a></>))}</span>}
+  </span>
+</div>
+<style>
+  .proj { display: flex; gap: 8px; align-items: flex-start; font-size: 16px; line-height: 1.5; }
+  .emo { width: 28px; flex-shrink: 0; font-size: 18px; }
+  b { font-weight: 500; }
+  .lnks { margin-left: 4px; }
+  .lnk { color: var(--muted); text-decoration-color: var(--rule); }
+</style>

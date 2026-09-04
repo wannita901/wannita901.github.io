@@ -1,0 +1,12 @@
+---
+interface Props { title: string; more?: { label: string; href: string }; }
+const { title, more } = Astro.props;
+---
+<section class="stack" style="gap: 16px;">
+  <div class="row keep">
+    <h2><span class="hash">#</span>{title}</h2>
+    {more && <a href={more.href} style="font-size: 15px;">{more.label} →</a>}
+  </div>
+  <div class="rule"></div>
+  <slot />
+</section>

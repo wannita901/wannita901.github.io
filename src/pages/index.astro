@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import ProjectRow from '../components/ProjectRow.astro';
+import PubEntry from '../components/PubEntry.astro';
+import EventRow from '../components/EventRow.astro';
+import ComingSoon from '../components/ComingSoon.astro';
+import { getCollection } from 'astro:content';
+import { loadPublications } from '../lib/bib';
+import { site } from '../site';
+
+const posts = (await getCollection('blog', (p) => !p.data.draft)).sort((a, b) => +b.data.date - +a.data.date).slice(0, 3);
+const projects = (await getCollection('projects', (p) => p.data.home)).sort((a, b) => a.data.order - b.data.order);
+const pubs = loadPublications().filter((p) => p.selected);
+const events = (await getCollection('events')).sort((a, b) => +b.data.date - +a.data.date).slice(0, 3);
+const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year: 'numeric' });
+---
+<BaseLayout>
+  <header class="hero">
+    <img src="/avatar.svg" alt="" width="96" height="96" class="avatar" />
+    <div class="stack" style="gap: 16px;">
+      <h1 style="font-size: 44px;">{site.name}</h1>
+      <p class="fg2" style="font-size: 19px; line-height: 1.55;">{site.bio}</p>
+      <p class="muted" style="font-size: 16px;"><span class="mono">now</span>&nbsp; {site.now}</p>
+      <div class="links">{site.socials.map((s) => <a href={s.href}>{s.label}</a>)}</div>
+    </div>
+  </header>
+
+  <Section title="Writing" more={{ label: 'All posts', href: '/blog/' }}>
+    {posts.length === 0 ? <ComingSoon /> : (
+      <div class="stack" style="gap: 12px;">
+        {posts.map((p) => (
+          <div class="row"><a href={`/blog/${p.id}/`} class="plain" style="font-size: 18px;">{p.data.title}</a><span class="mono">{month(p.data.date)}</span></div>
+        ))}
+      </div>
+    )}
+  </Section>
+
+  <Section title="Projects" more={{ label: 'All projects', href: '/projects/' }}>
+    <div class="stack" style="gap: 10px;">{projects.map((p) => <ProjectRow project={p} />)}</div>
+  </Section>
+
+  <Section title="Selected papers" more={{ label: 'All papers', href: '/publications/' }}>
+    <div class="stack" style="gap: 14px;">{pubs.map((p) => <PubEntry pub={p} />)}</div>
+  </Section>
+
+  <Section title="Latest" more={{ label: 'All events', href: '/about/#events' }}>
+    <div class="stack" style="gap: 8px;">{events.map((e) => <EventRow event={e} />)}</div>
+  </Section>
+</BaseLayout>
+<style>
+  .hero { display: flex; gap: 32px; align-items: flex-start; }
+  .avatar { flex-shrink: 0; border-radius: 8px; image-rendering: pixelated; }
+  @media (max-width: 560px) { .hero { flex-direction: column; gap: 16px; } .hero h1 { font-size: 32px !important; } .avatar { width: 72px; height: 72px; } }
+</style>

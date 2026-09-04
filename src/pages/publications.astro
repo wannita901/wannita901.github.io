@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PubEntry from '../components/PubEntry.astro';
+import { loadPublications, byYear } from '../lib/bib';
+import { site } from '../site';
+
+const pubs = loadPublications();
+const years = byYear(pubs);
+---
+<BaseLayout title="Publications" description="Publications by Wannita Takerngsaksiri on code completion, test generation, human-in-the-loop agents and developer use of AI tools.">
+  <header class="stack" style="gap: 10px;">
+    <h1>Publications</h1>
+    <p class="muted">{pubs.length} papers on code completion, test generation, human-in-the-loop agents and how developers use AI tools. Also on {site.scholarly.map((s, i) => (<>{i > 0 && ', '}<a href={s.href}>{s.label}</a></>))}.</p>
+  </header>
+  <div class="stack" style="gap: 30px;">
+    {years.map(([year, items], i) => (<>
+      {i > 0 && <div class="rule"></div>}
+      <div class="year">
+        <span class="mono y">{year}</span>
+        <div class="stack" style="gap: 18px; flex-grow: 1;">{items.map((p) => <PubEntry pub={p} />)}</div>
+      </div>
+    </>))}
+  </div>
+</BaseLayout>
+<style>
+  .year { display: flex; gap: 32px; align-items: flex-start; }
+  .y { width: 56px; flex-shrink: 0; font-size: 15px; padding-top: 4px; }
+  @media (max-width: 480px) { .year { flex-direction: column; gap: 10px; } }
+</style>
