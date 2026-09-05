@@ -3,6 +3,7 @@ name: "research-council"
 emoji: "🏛️"
 group: side
 order: 1
+tagline: "LLM council that drafts papers; a human holds the veto"
 home: true
 links:
   github: https://github.com/wannita901/research-council

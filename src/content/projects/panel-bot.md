@@ -3,6 +3,7 @@ name: "panel-bot"
 emoji: "🎙️"
 group: side
 order: 2
+tagline: "AI panelist for live discussions"
 home: true
 links:
   github: https://github.com/wannita901/panel-bot

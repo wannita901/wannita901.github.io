@@ -3,6 +3,7 @@ name: "HULA"
 emoji: "🤝"
 group: research
 order: 3
+tagline: "human-in-the-loop coding agents at Atlassian"
 home: true
 links:
   paper: https://arxiv.org/abs/2411.12924

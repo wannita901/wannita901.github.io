@@ -3,6 +3,7 @@ name: "PyTester"
 emoji: "🧪"
 group: research
 order: 5
+tagline: "RL for text-to-test-case generation"
 home: true
 links:
   github: https://github.com/awsm-research/pytester

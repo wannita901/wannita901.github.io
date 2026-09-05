@@ -20,6 +20,7 @@ const projects = defineCollection({
     group: z.enum(['research', 'side', 'hackathon']),
     order: z.number().default(99),
     home: z.boolean().default(false),
+    tagline: z.string().optional(),   // short, one line, used on the home page
     links: z.record(z.string(), z.string().url()).default({}),
   }),
 });

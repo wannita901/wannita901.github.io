@@ -6,6 +6,7 @@ export type Pub = {
   title: string;
   authors: string[];
   venue: string;
+  short: string;
   year: number;
   selected: boolean;
   links: { label: string; href: string }[];
@@ -39,6 +40,7 @@ export function loadPublications(path = 'src/data/publications.bib'): Pub[] {
         title: clean(t.title),
         authors: clean(t.author).split(/\s+and\s+/).map(author),
         venue: clean(t.venue ?? t.booktitle ?? t.journal ?? ''),
+        short: clean(t.short ?? (t.venue ?? '').split(/[\s,]/)[0]),
         year: Number(clean(t.year)),
         selected: /true|yes/i.test(t.selected ?? ''),
         links,
