@@ -26,11 +26,7 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
         <div class="role">{site.role}</div>
       </div>
       <p class="fg2" style="font-size: 19px; line-height: 1.55;">{site.bio}</p>
-      <p class="prev">previously, data scientist intern at
-        <a href={site.previously.intern.href} class="chip"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[site.previously.intern.icon]} />{site.previously.intern.label}</a>,
-        and data scientist at
-        {site.previously.roles.map((r, i) => (<>{i > 0 && ' and '}<a href={r.href} class="chip"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[r.icon]} />{r.label}</a></>))}.
-      </p>
+      <p class="prev">previously, data scientist intern at <a href={site.previously.intern.href} class="chip"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[site.previously.intern.icon]} />{site.previously.intern.label}</a>, and data scientist at {site.previously.roles.map((r, i) => (<>{i > 0 && ' and '}<a href={r.href} class="chip"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[r.icon]} />{r.label}</a></>))}.</p>
       <p class="muted" style="font-size: 16px;">{site.outside}</p>
     </div>
   </header>
