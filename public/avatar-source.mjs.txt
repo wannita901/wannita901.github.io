@@ -1,0 +1,89 @@
+import fs from 'node:fs';
+const W = 32, H = 32;
+const pal = { K: '#1C1917', P: '#FAF7F2', C: '#3F4450', B: '#EFB3C2', A: '#0F766E' };
+function base({ paper, mugLeft, mug = true }) {
+  const g = Array.from({ length: H }, () => Array(W).fill('P'));
+  const set = (r, a, b, c) => { for (let x = a; x <= b; x++) g[r][x] = c; };
+  // hair + face
+  set(2, 11, 20, 'K'); set(3, 9, 22, 'K'); set(4, 8, 23, 'K'); set(5, 7, 24, 'K'); set(6, 7, 24, 'K');
+  set(7, 7, 24, 'K'); set(7, 11, 21, 'P');
+  set(8, 7, 9, 'K'); set(8, 23, 24, 'K');
+  for (let r = 9; r <= 18; r++) { set(r, 7, 8, 'K'); set(r, 23, 24, 'K'); }
+  set(15, 10, 11, 'B'); set(15, 21, 22, 'B');
+  g[16][17] = 'K'; set(18, 16, 18, 'K');
+  set(19, 7, 9, 'K'); set(19, 23, 24, 'K');
+  set(20, 7, 10, 'K'); set(20, 22, 24, 'K');
+  set(21, 7, 13, 'K'); set(21, 19, 24, 'K');            // neck row 1
+  set(22, 6, 13, 'K'); set(22, 19, 25, 'K');            // neck row 2
+  // crew-neck collar + tee
+  set(23, 5, 12, 'K'); set(23, 13, 19, 'K'); set(23, 20, 24, 'K'); g[23][16] = 'P';   // collar line with a notch
+  g[24][16] = 'K';                                       // notch bottom
+  set(24, 4, 10, 'K'); set(24, 11, 12, 'C'); g[24][13] = 'K'; g[24][19] = 'K'; set(24, 20, 21, 'C'); set(24, 22, 24, 'K');
+  set(25, 3, 9, 'K');  set(25, 10, 12, 'C'); g[25][13] = 'K'; g[25][19] = 'K'; set(25, 20, 22, 'C'); set(25, 23, 24, 'K');
+  set(26, 2, 8, 'K');  set(26, 9, 12, 'C');  g[26][13] = 'K'; g[26][19] = 'K'; set(26, 20, 23, 'C'); g[26][24] = 'K';
+  set(27, 2, 7, 'K');  set(27, 8, 12, 'C');  g[27][13] = 'K'; g[27][19] = 'K'; set(27, 20, 24, 'C');
+  set(28, 0, 31, 'K');                                    // desk edge
+  if (paper) {
+    // sheet held up at right, in front of shoulder; text lines; hand at bottom-left corner
+    for (let r = 17; r <= 26; r++) { set(r, 23, 30, 'P'); g[r][23] = 'K'; g[r][30] = 'K'; }
+    set(17, 23, 30, 'K'); set(26, 23, 30, 'K');
+    set(19, 25, 28, 'K'); set(21, 25, 28, 'K'); set(23, 25, 27, 'K');
+    // hand: paper-coloured blob with ink outline over the sheet's lower-left corner
+    set(24, 21, 24, 'K'); set(25, 21, 24, 'P'); g[25][20] = 'K'; g[25][25] = 'K'; set(26, 21, 24, 'P'); g[26][20] = 'K'; g[26][25] = 'K'; set(27, 20, 25, 'K');
+  }
+  if (mugLeft) {
+    g[19][3] = 'K'; g[20][4] = 'K'; g[21][3] = 'K';
+    set(23, 2, 6, 'K');
+    for (let r = 24; r <= 27; r++) { g[r][2] = 'K'; set(r, 3, 5, 'A'); g[r][6] = 'K'; }
+    g[24][1] = 'K'; g[25][1] = 'K'; g[26][1] = 'K';
+  } else if (mug) {
+    g[20][28] = 'K'; g[21][29] = 'K'; g[19][29] = 'K';
+    set(23, 26, 30, 'K');
+    for (let r = 24; r <= 27; r++) { g[r][26] = 'K'; set(r, 27, 29, 'A'); g[r][30] = 'K'; }
+    g[24][31] = 'K'; g[25][31] = 'K'; g[26][31] = 'K';
+  }
+  return g;
+}
+const eyes = {
+  X2: (g) => { g[13][13] = 'K'; g[14][13] = 'K'; g[13][19] = 'K'; g[14][19] = 'K'; },
+  X6: (g) => { for (const [r, c] of [[13,13],[14,13],[14,14],[13,19],[14,19],[14,20]]) g[r][c] = 'K'; },
+};
+const variants = {
+  Y1: { eye: 'X2', paper: true,  mugLeft: true,  label: 'Y1 · X2 eyes · tee · paper + mug' },
+  Y2: { eye: 'X6', paper: true,  mugLeft: true,  label: 'Y2 · X6 eyes · tee · paper + mug' },
+  Y3: { eye: 'X2', paper: true,  mugLeft: false, mug: false, label: 'Y3 · X2 eyes · tee · paper, no mug' },
+  Y4: { eye: 'X6', paper: false, mugLeft: false, label: 'Y4 · X6 eyes · tee · mug only' },
+};
+const svg = (g) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" shape-rendering="crispEdges"><rect width="${W}" height="${H}" fill="${pal.P}"/>${g.flatMap((row, y) => row.map((c, x) => c === 'P' ? '' : `<rect x="${x}" y="${y}" width="1" height="1" fill="${pal[c]}"/>`)).join('')}</svg>`;
+const out = {};
+for (const [n, v] of Object.entries(variants)) { const g = base(v); eyes[v.eye](g); if (v.paper && !v.mugLeft) { /* remove right mug drawn by base */ } out[n] = svg(g); fs.writeFileSync(`avatar4-${n}.svg`, out[n]); }
+const sz = (s, n) => s.replace('<svg ', `<svg width="${n}" height="${n}" `);
+const card = (n) => `
+  <div style="display: flex; flex-direction: column; gap: 14px; width: 300px;">
+    <div style="width: 256px; height: 256px; border-radius: 12px; overflow: hidden;">${sz(out[n], 256)}</div>
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <div style="width: 96px; height: 96px; border-radius: 8px; overflow: hidden;">${sz(out[n], 96)}</div>
+      <div style="width: 48px; height: 48px; border-radius: 6px; overflow: hidden;">${sz(out[n], 48)}</div>
+    </div>
+    <div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 16px; color: #1C1917;"><b style="font-weight: 500;">${variants[n].label}</b></div>
+  </div>`;
+fs.writeFileSync('AvatarPaper.dc.html', `<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&display=swap">
+  <style>body { margin: 0; background: #FAF7F2; } a { color: #0F766E; } a:hover { color: #0B5A54; }</style>
+</helmet>
+<div style="width: 1420px; min-height: 500px; box-sizing: border-box; background: #FAF7F2; padding: 40px;">
+  <div style="display: flex; gap: 40px; align-items: flex-start;">${Object.keys(variants).map(card).join('')}</div>
+</div>
+</x-dc>
+</body>
+</html>`);
+fs.writeFileSync('avatar-preview.html', `<body style="margin:0;background:#FAF7F2;display:flex;gap:16px;padding:16px;align-items:flex-start">${Object.keys(variants).map(n => `<img src="avatar4-${n}.svg" width="288" height="288">`).join('')}</body>`);
+console.log('ok');
