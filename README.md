@@ -48,7 +48,9 @@ One sentence about it.
 ```md
 ---
 date: 2026-10-01
-title: "PC member, MSR 2027"
+position: "Program Committee"
+track: "Mining Challenge"     # optional, leave "" if none
+venue: "MSR 2027"
 link: https://...
 ---
 ```

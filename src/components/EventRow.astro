@@ -2,15 +2,18 @@
 import type { CollectionEntry } from 'astro:content';
 interface Props { event: CollectionEntry<'events'>; }
 const { event: e } = Astro.props;
-const d = e.data.date.toISOString().slice(0, 7);
+const { position, track, venue, link } = e.data;
 ---
-<div class="ev">
-  <span class="mono d">{d}</span>
-  <span>
-    {e.data.link ? <a href={e.data.link}>{e.data.title}</a> : e.data.title}
-  </span>
+<div class="line">
+  <span class="mono year">{e.data.date.getFullYear()}</span>
+  <b class="pos">{link ? <a href={link} class="plain">{position}</a> : position}</b>
+  {track && <span class="one fg2">{track}</span>}
+  <span class="dots"></span>
+  <span class="mono venue">{venue}</span>
 </div>
 <style>
-  .ev { display: flex; gap: 20px; font-size: 16px; }
-  .d { width: 84px; flex-shrink: 0; padding-top: 4px; }
+  .year { width: 44px; flex-shrink: 0; }
+  .pos { font-weight: 500; flex-shrink: 0; }
+  .venue { flex-shrink: 0; }
+  @media (max-width: 560px) { .one, .dots { display: none; } }
 </style>
