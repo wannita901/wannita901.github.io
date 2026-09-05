@@ -18,7 +18,7 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
 ---
 <BaseLayout>
   <header class="hero">
-    <img src="/avatar.svg" alt="" width="96" height="96" class="avatar" />
+    <img src="/avatar.svg" alt="" width="128" height="128" class="avatar" />
     <div class="stack" style="gap: 16px;">
       <h1 style="font-size: 44px;">{site.name}</h1>
       <p class="fg2" style="font-size: 19px; line-height: 1.55;">{site.bio}</p>
@@ -62,5 +62,5 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
 <style>
   .hero { display: flex; gap: 32px; align-items: flex-start; }
   .avatar { flex-shrink: 0; border-radius: 8px; image-rendering: pixelated; }
-  @media (max-width: 560px) { .hero { flex-direction: column; gap: 16px; } .hero h1 { font-size: 32px !important; } .avatar { width: 72px; height: 72px; } }
+  @media (max-width: 560px) { .hero { flex-direction: column; gap: 16px; } .hero h1 { font-size: 32px !important; } .avatar { width: 96px; height: 96px; } }
 </style>
