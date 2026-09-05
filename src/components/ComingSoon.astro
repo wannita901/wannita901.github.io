@@ -1,13 +1,7 @@
----
-interface Props { what?: string; }
-const { what = 'Posts' } = Astro.props;
----
 <div class="soon">
   <p class="line">Coming soon.</p>
-  <p class="sub">{what} will land here.</p>
 </div>
 <style>
   .soon { display: flex; flex-direction: column; gap: 6px; padding: 8px 0; }
   .line { font-family: var(--serif); font-style: italic; font-size: 24px; color: var(--fg-2); }
-  .sub { font-size: 15px; color: var(--muted); }
 </style>

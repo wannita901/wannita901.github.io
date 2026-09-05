@@ -8,10 +8,7 @@ const posts = (await getCollection('blog', (p) => !p.data.draft)).sort((a, b) =>
 const fmt = (d: Date) => d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
 ---
 <BaseLayout title="Writing" description="Notes on LLM tooling for developers, research process, and what survives contact with production.">
-  <header class="stack" style="gap: 10px;">
-    <h1>Writing</h1>
-    <p class="muted">Notes on LLM tooling for developers, research process, and what survives contact with production.</p>
-  </header>
+  <header><h1>Writing</h1></header>
   {posts.length === 0 ? <ComingSoon /> : (
     <div class="stack" style="gap: 26px;">
       {posts.map((p, i) => (<>

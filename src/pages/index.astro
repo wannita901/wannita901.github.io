@@ -23,7 +23,6 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
       <h1 style="font-size: 44px;">{site.name}</h1>
       <p class="fg2" style="font-size: 19px; line-height: 1.55;">{site.bio}</p>
       <p class="muted" style="font-size: 16px;">{site.outside}</p>
-      <SocialLinks />
     </div>
   </header>
 
@@ -45,7 +44,7 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
     <div class="stack" style="gap: 14px;">{pubs.map((p) => <PubEntry pub={p} />)}</div>
   </Section>
 
-  <Section title="Latest">
+  <Section title="Services">
     <div class="stack" style="gap: 8px;">{events.map((e) => <EventRow event={e} />)}</div>
   </Section>
 

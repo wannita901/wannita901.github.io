@@ -1,8 +1,8 @@
 ---
 name: "HairSimulation"
 emoji: "💇"
-group: side
-order: 13
+group: hackathon
+order: 24
 home: false
 links:
   github: https://github.com/wannita901/HairSimulation

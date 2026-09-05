@@ -1,8 +1,8 @@
 ---
 name: "ChessASR"
 emoji: "♟️"
-group: side
-order: 12
+group: hackathon
+order: 23
 home: false
 links:
   github: https://github.com/wannita901/ChessASR

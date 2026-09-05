@@ -5,7 +5,7 @@ import ProjectRow from '../components/ProjectRow.astro';
 import { getCollection } from 'astro:content';
 
 const all = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
-const groups: [string, string][] = [['research', 'Research tools'], ['side', 'Side projects'], ['hackathon', 'Hackathons & student work']];
+const groups: [string, string][] = [['research', 'Research tools'], ['side', 'Side projects'], ['hackathon', 'Hackathons & Archive (Inactive)']];
 ---
 <BaseLayout title="Projects" description="Research tools, side projects and hackathon entries by Wannita Takerngsaksiri.">
   <header class="stack" style="gap: 10px;">
