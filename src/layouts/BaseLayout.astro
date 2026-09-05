@@ -15,7 +15,7 @@ const { title, description = site.description } = Astro.props;
 const fullTitle = title ? `${title} · ${site.shortName}` : site.name;
 ---
 <!doctype html>
-<html lang="en">
+<html lang="en" data-look={site.look}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -33,15 +33,20 @@ const fullTitle = title ? `${title} · ${site.shortName}` : site.name;
           var t = localStorage.getItem('theme');
           if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
           document.documentElement.setAttribute('data-theme', t);
+          var l = new URLSearchParams(location.search).get('look');
+          if (l) document.documentElement.setAttribute('data-look', l);
         } catch (e) {}
       })();
     </script>
   </head>
   <body>
-    <div class="wrap">
-      <Nav />
-      <slot />
-      <Footer />
+    <span class="punch"></span><span class="punch"></span><span class="punch"></span>
+    <div class="sheet">
+      <div class="wrap">
+        <Nav />
+        <slot />
+        <Footer />
+      </div>
     </div>
   </body>
 </html>
