@@ -2,7 +2,7 @@
 name: "panel-bot"
 emoji: "🎙️"
 group: side
-order: 10
+order: 2
 home: true
 links:
   github: https://github.com/wannita901/panel-bot

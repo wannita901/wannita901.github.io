@@ -2,7 +2,7 @@
 name: "PyCoder"
 emoji: "🐍"
 group: research
-order: 2
+order: 4
 home: true
 links:
   hugging face: https://huggingface.co/Wannita

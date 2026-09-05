@@ -2,7 +2,7 @@
 name: "research-council"
 emoji: "🏛️"
 group: side
-order: 9
+order: 1
 home: true
 links:
   github: https://github.com/wannita901/research-council

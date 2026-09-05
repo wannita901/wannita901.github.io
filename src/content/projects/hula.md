@@ -2,7 +2,7 @@
 name: "HULA"
 emoji: "🤝"
 group: research
-order: 4
+order: 3
 home: true
 links:
   paper: https://arxiv.org/abs/2411.12924

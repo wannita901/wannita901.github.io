@@ -2,7 +2,7 @@
 name: "PyTester"
 emoji: "🧪"
 group: research
-order: 3
+order: 5
 home: true
 links:
   github: https://github.com/awsm-research/pytester
