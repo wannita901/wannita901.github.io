@@ -14,7 +14,7 @@ export const site = {
       { label: 'CP Group', icon: 'cp', href: 'https://www.cpgroupglobal.com' },
     ],
   },
-  outside: 'Outside work: ▤ reader · ⚑ community service · ⌁ hackathons',
+  outside: 'Outside work: ▤ reader · ✦ community service · ⚑ hackathons',
   email: 'wannita.takerngsaksiri@deakin.edu.au',
   // icon = key in src/components/icons.ts
   socials: [
