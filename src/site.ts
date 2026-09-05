@@ -22,7 +22,7 @@ export const site = {
     { label: 'DBLP', href: 'https://dblp.org/pid/240/1575.html' },
     { label: 'ORCID', href: 'https://orcid.org/0000-0001-9909-8850' },
   ],
-  supervision: 'Open to supervising Masters by Research and PhD students at A2I2. Topics include, but are not limited to: self-improving agents, LLM-based simulation tools, AI for science, evaluation of foundation-model applications, and human-AI collaboration in software development. Email me a one-page idea.',
+  supervision: 'Open to supervising Masters by Research and PhD students at A2I2. Topics include, but are not limited to: self-improving agents, LLM-based simulation tools, AI for science, and agentic evals. Email me a one-page idea.',
   nav: [
     { label: 'Blog', href: '/blog/' },
     { label: 'Projects', href: '/projects/' },
