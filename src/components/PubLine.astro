@@ -6,7 +6,7 @@ const href = pub.links.find((l) => l.label === 'arxiv' || l.label === 'doi' || l
 ---
 <div class="line">
   <span class="tag venue">{pub.short}</span>
-  <a href={href} class="plain one">{pub.title}</a>
+  <a href={href} class="plain one" style="flex-grow: 1;">{pub.title}</a>
   <span class="mono year">{pub.year}</span>
 </div>
 <style>
