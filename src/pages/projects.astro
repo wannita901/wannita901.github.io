@@ -8,10 +8,7 @@ const all = (await getCollection('projects')).sort((a, b) => a.data.order - b.da
 const groups: [string, string][] = [['research', 'Research tools'], ['side', 'Side projects'], ['hackathon', 'Hackathons & Archive (Inactive)']];
 ---
 <BaseLayout title="Projects" description="Research tools, side projects and hackathon entries by Wannita Takerngsaksiri.">
-  <header class="stack" style="gap: 10px;">
-    <h1>Projects</h1>
-    <p class="muted">Research tools I built or co-built, side projects, and hackathon entries. Most are on <a href="https://github.com/wannita901">GitHub</a>; models and datasets on <a href="https://huggingface.co/Wannita">Hugging Face</a>.</p>
-  </header>
+  <header><h1>Projects</h1></header>
   {groups.map(([key, title]) => {
     const items = all.filter((p) => p.data.group === key);
     return items.length > 0 && (
