@@ -4,8 +4,17 @@ export const site = {
   shortName: 'Wannita',
   url: 'https://wannita901.github.io',
   description: 'AI for Software Engineering researcher. Research Fellow at Deakin A2I2, Melbourne.',
-  bio: "I build and study AI tools for software engineers. Research Fellow at Deakin's Applied Artificial Intelligence Initiative (A2I2), Melbourne, working with industry partners on agentic systems and their evaluation. PhD at Monash on practical code-generation tools, where I also taught software engineering and software testing. Formerly Data Scientist Intern at Atlassian, and data scientist at SCB and CP Group in Bangkok.",
-  outside: 'Outside work: ⌁ hackathons · ✚ community service · ▤ reader',
+  role: 'AI researcher & engineer · Melbourne',
+  bio: "I build and study AI tools for software engineers. Research Fellow at Deakin's A2I2, working with industry on agentic systems and their evaluation. PhD from Monash on code generation (RL & human-in-the-loop systems), where I also taught software engineering and testing.",
+  // rendered as: previously, data scientist intern at [Atlassian], and data scientist at [SCB] and [CP Group].
+  previously: {
+    intern: { label: 'Atlassian', icon: 'atlassian', href: 'https://www.atlassian.com' },
+    roles: [
+      { label: 'SCB', icon: 'scb', href: 'https://www.scb.co.th' },
+      { label: 'CP Group', icon: 'cp', href: 'https://www.cpgroupglobal.com' },
+    ],
+  },
+  outside: 'Outside work: ▤ reader · ✚ community service · ⌁ hackathons',
   email: 'wannita.takerngsaksiri@deakin.edu.au',
   // icon = key in src/components/icons.ts
   socials: [
