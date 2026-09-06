@@ -1,7 +1,5 @@
 // ponytail: single config object; edit here, everything re-renders.
 export const site = {
-  // page look: 'plain' | 'ruled' | 'desk'. Preview any with ?look=… in the URL.
-  look: 'desk',
   name: 'Wannita Takerngsaksiri',
   shortName: 'Wannita',
   url: 'https://wannita901.github.io',
