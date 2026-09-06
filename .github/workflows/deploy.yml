@@ -1,11 +1,8 @@
 name: Deploy to GitHub Pages
 
-# DRAFT MODE: deploys only when run by hand.
-# To release: (1) rename repo back to wannita901.github.io and make it public,
-# (2) Settings → Pages → Source: GitHub Actions, (3) change `on:` below to
-#   push:
-#     branches: [main]
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:

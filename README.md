@@ -1,14 +1,8 @@
-# wannita901-site (draft of wannita901.github.io)
+# wannita901.github.io
 
-Personal site. Astro, plain CSS, GitHub Pages.
+Personal site, live at https://wannita901.github.io. Astro, plain CSS, GitHub Pages. Push to `main` deploys (~1 min).
 
-**Status: draft, unpublished.** Repo is private and renamed so the live URL is down.
-
-## Release checklist (when ready)
-
-1. `gh repo rename wannita901.github.io` (from this repo) and `gh repo edit --visibility public --accept-visibility-change-consequences`.
-2. Repo Settings → Pages → Source: **GitHub Actions** (or `gh api -X POST repos/wannita901/wannita901.github.io/pages -f build_type=workflow`).
-3. In `.github/workflows/deploy.yml` change `on:` to `push: { branches: [main] }`, commit, push. First deploy takes ~1 min.
+To take the site down temporarily: rename the repo (e.g. `gh repo rename wannita901-site`), make it private, and delete Pages via `gh api -X DELETE repos/wannita901/<name>/pages`. Reverse to bring it back.
 
 ## Add things
 
