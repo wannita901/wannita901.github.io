@@ -22,7 +22,7 @@ a.plain:hover { text-decoration: underline; }
 h1, h2, h3 { font-family: var(--serif); font-weight: 500; margin: 0; letter-spacing: -0.01em; line-height: 1.15; }
 h1 { font-size: 40px; }
 h2 { font-size: 26px; }
-p { margin: 0; }
+p { margin: 0; text-wrap: pretty; }
 img, svg { max-width: 100%; }
 
 .wrap { max-width: 720px; margin: 0 auto; padding: 40px 24px 80px; display: flex; flex-direction: column; gap: 48px; }

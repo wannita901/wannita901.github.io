@@ -7,7 +7,7 @@ export const site = {
   url: 'https://wannita901.github.io',
   description: 'AI for Software Engineering researcher. Research Fellow at Deakin A2I2, Melbourne.',
   role: 'AI researcher & engineer · Melbourne',
-  bio: "I build and study AI tools for software engineers. Research Fellow at Deakin's A2I2, working with industry on agentic systems and their evaluation. PhD from Monash on code generation (RL & human-in-the-loop systems), where I also taught software engineering and testing.",
+  bio: "I build and study AI tools for software engineers. Research Fellow at Deakin's A2I2, working with industry on agentic systems and their evaluation. PhD from Monash on code generation (RL & human-in-the-loop systems), where I also taught software engineering and software testing.",
   // rendered as: previously, data scientist intern at [Atlassian], and data scientist at [SCB] and [CP Group].
   previously: {
     intern: { label: 'Atlassian', icon: 'atlassian', href: 'https://www.atlassian.com' },
