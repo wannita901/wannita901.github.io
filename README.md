@@ -2,10 +2,6 @@
 
 Personal site, live at https://wannita901.github.io. Astro, plain CSS, GitHub Pages. Push to `main` deploys (~1 min).
 
-## Maintenance mode
-
-Actions tab → **Deploy to GitHub Pages** → *Run workflow* → mode **down**: publishes `maintenance/index.html` ("Back soon") instead of the site. Run again with mode **live** to restore. Note: any push to `main` while down republishes the live site.
-
 ## Add things
 
 **Blog post** → new file `src/content/blog/<slug>.md`
@@ -53,6 +49,10 @@ link: https://...
 
 **Bio, "outside work" line, supervision text, social links** → `src/site.ts`. To re-enable X, uncomment its line there.
 **Avatar** → `public/avatar.svg` (32×32 pixel art; generator kept at `public/avatar-source.mjs.txt`, variant Y1). Replace the file to change it.
+
+## Maintenance mode
+
+Actions tab → **Deploy to GitHub Pages** → *Run workflow* → mode **down**: publishes `maintenance/index.html` ("Back soon") instead of the site. Run again with mode **live** to restore. Note: any push to `main` while down republishes the live site.
 
 ## Run locally (optional)
 
