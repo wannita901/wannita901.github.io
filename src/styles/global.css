@@ -72,12 +72,12 @@ img, svg { max-width: 100%; }
 
 
 /* the page is a sheet of paper on a walnut desk */
-:root { --desk: #A97C54; --sheet: #FBF8F1; --sheet2: #F1EBE0; --shadow: rgba(40,25,10,.38); --streak: rgba(60,35,15,.18); --streak2: rgba(60,35,15,.08); --hl: rgba(255,235,200,.12); }
+:root { --desk: #C9A98A; --sheet: #FBF8F1; --sheet2: #F1EBE0; --shadow: rgba(40,25,10,.38); --streak: rgba(60,35,15,.18); --streak2: rgba(60,35,15,.08); --hl: rgba(255,235,200,.12); }
 [data-theme="dark"] { --desk: #2B1F17; --sheet: #16130F; --sheet2: #1F1B16; --shadow: rgba(0,0,0,.7); --sheet-edge: rgba(255,255,255,.08); }
 html { background-color: var(--desk); }
 body { background: transparent; }
-:root { --desk-photo: url(/desk/walnut.jpg); --desk-tint: rgba(60,35,15,.18); }
-[data-theme="dark"] { --desk-tint: rgba(0,0,0,.38); }
+:root { --desk-photo: url(/desk/oak.jpg); --desk-tint: rgba(120,90,60,.10); }
+[data-theme="dark"] { --desk-photo: url(/desk/walnut.jpg); --desk-tint: rgba(0,0,0,.38); }
 html { overflow-x: hidden; }
 body { padding: 48px 0 64px; overflow-x: hidden; }
 body::before { content: ""; position: fixed; inset: 0; z-index: -1; background-color: var(--desk); background-image: linear-gradient(var(--desk-tint), var(--desk-tint)), var(--desk-photo); background-size: cover; background-position: center; pointer-events: none; }
