@@ -35,6 +35,8 @@ const fullTitle = title ? `${title} · ${site.shortName}` : site.name;
           document.documentElement.setAttribute('data-theme', t);
           var l = new URLSearchParams(location.search).get('look');
           if (l) document.documentElement.setAttribute('data-look', l);
+          var w = new URLSearchParams(location.search).get('wood');
+          if (w) document.documentElement.setAttribute('data-wood', w);
         } catch (e) {}
       })();
     </script>
