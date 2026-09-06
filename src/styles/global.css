@@ -97,3 +97,29 @@ img, svg { max-width: 100%; }
 [data-look="desk"] .sheet::after { content: ""; position: absolute; inset: 0; background-image: var(--grain); opacity: .18; mix-blend-mode: multiply; pointer-events: none; border-radius: 3px; }
 [data-look="desk"] .wrap { padding: 44px 40px 60px; position: relative; z-index: 1; }
 @media (max-width: 560px) { [data-look="desk"] body { padding: 14px 0 24px; } [data-look="desk"] .page-stack { margin: 0 10px; } [data-look="desk"] .page-stack::before { inset: 6px -4px -6px 5px; } [data-look="desk"] .wrap { padding: 24px 18px 48px; } }
+
+/* ruled: vertical rhythm so text sits on the lines. Every height/gap is a multiple of --line. */
+[data-look="ruled"] .wrap { padding-top: var(--pad-top); gap: calc(var(--line) * 2); }
+[data-look="ruled"] .wrap > section { display: flex; flex-direction: column; gap: 0; }
+[data-look="ruled"] .hero { gap: 32px; }
+[data-look="ruled"] .wrap > section > .rule { height: var(--line); background: none; }
+[data-look="ruled"] .wrap > section > .row { line-height: var(--line); height: var(--line); }
+[data-look="ruled"] h1 { line-height: calc(var(--line) * 2); }
+[data-look="ruled"] h2 { line-height: var(--line); font-size: 24px; }
+[data-look="ruled"] .hash { line-height: 1; }
+[data-look="ruled"] p, [data-look="ruled"] .line, [data-look="ruled"] .prev, [data-look="ruled"] .role { line-height: var(--line); }
+[data-look="ruled"] .stack, [data-look="ruled"] .hero .stack { gap: 0 !important; }
+[data-look="ruled"] .wrap > section > .stack > .line, [data-look="ruled"] .wrap > section > .stack > .row { min-height: var(--line); }
+[data-look="ruled"] .fg2[style*="font-size: 19px"] { font-size: 18px !important; line-height: var(--line) !important; }
+[data-look="ruled"] .prev { line-height: var(--line); }
+[data-look="ruled"] .chip { height: 22px; vertical-align: baseline; position: relative; top: 1px; }
+[data-look="ruled"] .avatar { height: calc(var(--line) * 5); width: calc(var(--line) * 5); }
+[data-look="ruled"] .hero { align-items: flex-start; }
+[data-look="ruled"] .soon .line { font-size: 22px; line-height: var(--line); }
+[data-look="ruled"] footer { line-height: var(--line); padding-top: 0; }
+[data-look="ruled"] .nav { height: var(--line); line-height: var(--line); }
+[data-look="ruled"] .btn, [data-look="ruled"] .tag { height: 22px; }
+
+/* desk: keep the desk visible at every width */
+[data-look="desk"] .page-stack { width: min(800px, calc(100% - 48px)); }
+@media (max-width: 560px) { [data-look="desk"] .page-stack { width: calc(100% - 20px); margin: 0 auto; } }
