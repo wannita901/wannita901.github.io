@@ -87,8 +87,6 @@ img, svg { max-width: 100%; }
 [data-look="desk"] html { background-color: var(--desk); }
 [data-look="desk"] body { background: transparent; }
 [data-look="desk"] { --desk-photo: url(/desk/walnut.jpg); --desk-tint: rgba(60,35,15,.18); }
-[data-look="desk"][data-wood="oak"] { --desk-photo: url(/desk/oak.jpg); --desk-tint: rgba(120,90,60,.10); }
-[data-look="desk"][data-wood="planks"] { --desk-photo: url(/desk/planks.jpg); --desk-tint: rgba(40,20,10,.22); }
 [data-look="desk"][data-theme="dark"] { --desk-tint: rgba(0,0,0,.62); }
 [data-look="desk"] body { padding: 48px 0 64px; }
 [data-look="desk"] body::before { content: ""; position: fixed; inset: 0; z-index: -1; background-color: var(--desk); background-image: linear-gradient(var(--desk-tint), var(--desk-tint)), var(--desk-photo); background-size: cover; background-position: center; pointer-events: none; }
@@ -124,3 +122,15 @@ img, svg { max-width: 100%; }
 /* desk: keep the desk visible at every width */
 [data-look="desk"] .page-stack { width: min(800px, calc(100% - 48px)); }
 @media (max-width: 560px) { [data-look="desk"] .page-stack { width: calc(100% - 20px); margin: 0 auto; } }
+
+[data-look="desk"]:not([data-theme="dark"]) .avatar { mix-blend-mode: multiply; }
+
+/* dot grid with cursor glow */
+[data-look="grid"] body { background-color: var(--bg); background-image: radial-gradient(var(--rule) 1px, transparent 1.2px); background-size: 22px 22px; background-attachment: fixed; }
+[data-look="grid"][data-theme="dark"] body { background-image: radial-gradient(#3A342E 1px, transparent 1.2px); }
+#fx-cell, #fx-dots { position: fixed; pointer-events: none; display: none; z-index: 0; }
+#fx-cell { width: 22px; height: 22px; border: 1px solid var(--accent); border-radius: 2px; box-shadow: 0 0 10px 1px color-mix(in oklab, var(--accent) 55%, transparent), inset 0 0 6px color-mix(in oklab, var(--accent) 25%, transparent); transition: left .08s, top .08s, opacity .2s; }
+#fx-dots { inset: 0; background: radial-gradient(circle at var(--mx) var(--my), var(--accent) 0, color-mix(in oklab, var(--accent) 40%, transparent) 40px, transparent 110px); -webkit-mask-image: radial-gradient(#000 1.6px, transparent 1.9px); mask-image: radial-gradient(#000 1.6px, transparent 1.9px); -webkit-mask-size: 22px 22px; mask-size: 22px 22px; transition: opacity .2s; }
+[data-look="grid"][data-fx="cell"] #fx-cell, [data-look="grid"][data-fx="both"] #fx-cell { display: block; }
+[data-look="grid"][data-fx="dots"] #fx-dots, [data-look="grid"][data-fx="both"] #fx-dots { display: block; }
+[data-look="grid"] .wrap { position: relative; z-index: 1; }

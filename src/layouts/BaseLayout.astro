@@ -35,14 +35,29 @@ const fullTitle = title ? `${title} · ${site.shortName}` : site.name;
           document.documentElement.setAttribute('data-theme', t);
           var l = new URLSearchParams(location.search).get('look');
           if (l) document.documentElement.setAttribute('data-look', l);
-          var w = new URLSearchParams(location.search).get('wood');
-          if (w) document.documentElement.setAttribute('data-wood', w);
+          var fx = new URLSearchParams(location.search).get('fx');
+          document.documentElement.setAttribute('data-fx', fx || 'both');
         } catch (e) {}
       })();
     </script>
   </head>
   <body>
     <span class="punch"></span><span class="punch"></span><span class="punch"></span>
+    <div id="fx-cell"></div><div id="fx-dots"></div>
+    <script is:inline>
+      // ponytail: grid-look cursor glow. Snaps a 22px cell to the cursor and lights nearby dots.
+      (function () {
+        if (document.documentElement.getAttribute('data-look') !== 'grid') return;
+        var cell = document.getElementById('fx-cell'), dots = document.getElementById('fx-dots'), G = 22;
+        addEventListener('mousemove', function (e) {
+          cell.style.left = Math.floor(e.clientX / G) * G + 'px';
+          cell.style.top = Math.floor(e.clientY / G) * G + 'px';
+          dots.style.setProperty('--mx', e.clientX + 'px'); dots.style.setProperty('--my', e.clientY + 'px');
+          cell.style.opacity = dots.style.opacity = 1;
+        });
+        addEventListener('mouseleave', function () { cell.style.opacity = dots.style.opacity = 0; });
+      })();
+    </script>
     <div class="page-stack">
     <div class="sheet">
       <div class="wrap">
