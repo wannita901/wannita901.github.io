@@ -84,7 +84,8 @@ img, svg { max-width: 100%; }
 /* sheet on a desk */
 [data-look="desk"] { --desk: #A97C54; --sheet: #FBF8F1; --sheet2: #F1EBE0; --shadow: rgba(40,25,10,.38); --streak: rgba(60,35,15,.18); --streak2: rgba(60,35,15,.08); --hl: rgba(255,235,200,.12); }
 [data-look="desk"][data-theme="dark"] { --desk: #2B1F17; --sheet: #1A1714; --sheet2: #23201C; --shadow: rgba(0,0,0,.65); --streak: rgba(0,0,0,.35); --streak2: rgba(0,0,0,.18); --hl: rgba(255,220,180,.05); }
-[data-look="desk"] html, [data-look="desk"] body { background-color: var(--desk); }
+[data-look="desk"] html { background-color: var(--desk); }
+[data-look="desk"] body { background: transparent; }
 [data-look="desk"] { --desk-photo: url(/desk/walnut.jpg); --desk-tint: rgba(60,35,15,.18); }
 [data-look="desk"][data-wood="oak"] { --desk-photo: url(/desk/oak.jpg); --desk-tint: rgba(120,90,60,.10); }
 [data-look="desk"][data-wood="planks"] { --desk-photo: url(/desk/planks.jpg); --desk-tint: rgba(40,20,10,.22); }
