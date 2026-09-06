@@ -2,7 +2,9 @@
 
 Personal site, live at https://wannita901.github.io. Astro, plain CSS, GitHub Pages. Push to `main` deploys (~1 min).
 
-To take the site down temporarily: make the repo private (Settings → Danger zone → Change visibility); Pages stops serving within a few minutes. To bring it back: make it public again and rerun the deploy workflow from the Actions tab.
+## Maintenance mode
+
+Actions tab → **Deploy to GitHub Pages** → *Run workflow* → mode **down**: publishes `maintenance/index.html` ("Back soon") instead of the site. Run again with mode **live** to restore. Note: any push to `main` while down republishes the live site.
 
 ## Add things
 

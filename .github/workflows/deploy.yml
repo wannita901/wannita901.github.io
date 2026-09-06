@@ -4,6 +4,12 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      mode:
+        description: "live = build and publish the site · down = publish the maintenance page"
+        type: choice
+        options: [live, down]
+        default: live
 
 permissions:
   contents: read
@@ -15,9 +21,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: withastro/action@v3
+      - name: Build site
+        if: inputs.mode != 'down'
+        uses: withastro/action@v3
         with:
           node-version: 22
+      - name: Package maintenance page
+        if: inputs.mode == 'down'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: maintenance
   deploy:
     needs: build
     runs-on: ubuntu-latest
