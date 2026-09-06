@@ -83,16 +83,17 @@ img, svg { max-width: 100%; }
 
 /* sheet on a desk */
 [data-look="desk"] { --desk: #A97C54; --sheet: #FBF8F1; --sheet2: #F1EBE0; --shadow: rgba(40,25,10,.38); --streak: rgba(60,35,15,.18); --streak2: rgba(60,35,15,.08); --hl: rgba(255,235,200,.12); }
-[data-look="desk"][data-theme="dark"] { --desk: #2B1F17; --sheet: #1A1714; --sheet2: #23201C; --shadow: rgba(0,0,0,.65); --streak: rgba(0,0,0,.35); --streak2: rgba(0,0,0,.18); --hl: rgba(255,220,180,.05); }
+[data-look="desk"][data-theme="dark"] { --desk: #2B1F17; --sheet: #16130F; --sheet2: #1F1B16; --shadow: rgba(0,0,0,.7); --sheet-edge: rgba(255,255,255,.08); }
 [data-look="desk"] html { background-color: var(--desk); }
 [data-look="desk"] body { background: transparent; }
 [data-look="desk"] { --desk-photo: url(/desk/walnut.jpg); --desk-tint: rgba(60,35,15,.18); }
-[data-look="desk"][data-theme="dark"] { --desk-tint: rgba(0,0,0,.62); }
-[data-look="desk"] body { padding: 48px 0 64px; }
+[data-look="desk"][data-theme="dark"] { --desk-tint: rgba(0,0,0,.38); }
+[data-look="desk"] html { overflow-x: hidden; }
+[data-look="desk"] body { padding: 48px 0 64px; overflow-x: hidden; }
 [data-look="desk"] body::before { content: ""; position: fixed; inset: 0; z-index: -1; background-color: var(--desk); background-image: linear-gradient(var(--desk-tint), var(--desk-tint)), var(--desk-photo); background-size: cover; background-position: center; pointer-events: none; }
 [data-look="desk"] .page-stack { position: relative; max-width: 800px; margin: 0 auto; }
 [data-look="desk"] .page-stack::before { content: ""; position: absolute; inset: 12px -8px -12px 10px; background: var(--sheet2); border-radius: 3px; box-shadow: 0 10px 24px var(--shadow); transform: rotate(.7deg); }
-[data-look="desk"] .sheet { position: relative; background: var(--sheet); border-radius: 3px; box-shadow: 0 22px 48px var(--shadow), 0 2px 4px var(--shadow); }
+[data-look="desk"] .sheet { position: relative; background: var(--sheet); border-radius: 3px; box-shadow: 0 22px 48px var(--shadow), 0 2px 4px var(--shadow); border: 1px solid var(--sheet-edge, transparent); }
 [data-look="desk"] .sheet::after { content: ""; position: absolute; inset: 0; background-image: var(--grain); opacity: .18; mix-blend-mode: multiply; pointer-events: none; border-radius: 3px; }
 [data-look="desk"] .wrap { padding: 44px 40px 60px; position: relative; z-index: 1; }
 @media (max-width: 560px) { [data-look="desk"] body { padding: 14px 0 24px; } [data-look="desk"] .page-stack { margin: 0 10px; } [data-look="desk"] .page-stack::before { inset: 6px -4px -6px 5px; } [data-look="desk"] .wrap { padding: 24px 18px 48px; } }
@@ -124,13 +125,3 @@ img, svg { max-width: 100%; }
 @media (max-width: 560px) { [data-look="desk"] .page-stack { width: calc(100% - 20px); margin: 0 auto; } }
 
 [data-look="desk"]:not([data-theme="dark"]) .avatar { mix-blend-mode: multiply; }
-
-/* dot grid with cursor glow */
-[data-look="grid"] body { background-color: var(--bg); background-image: radial-gradient(var(--rule) 1px, transparent 1.2px); background-size: 22px 22px; background-attachment: fixed; }
-[data-look="grid"][data-theme="dark"] body { background-image: radial-gradient(#3A342E 1px, transparent 1.2px); }
-#fx-cell, #fx-dots { position: fixed; pointer-events: none; display: none; z-index: 0; }
-#fx-cell { width: 22px; height: 22px; border: 1px solid var(--accent); border-radius: 2px; box-shadow: 0 0 10px 1px color-mix(in oklab, var(--accent) 55%, transparent), inset 0 0 6px color-mix(in oklab, var(--accent) 25%, transparent); transition: left .08s, top .08s, opacity .2s; }
-#fx-dots { inset: 0; background: radial-gradient(circle at var(--mx) var(--my), var(--accent) 0, color-mix(in oklab, var(--accent) 40%, transparent) 40px, transparent 110px); -webkit-mask-image: radial-gradient(#000 1.6px, transparent 1.9px); mask-image: radial-gradient(#000 1.6px, transparent 1.9px); -webkit-mask-size: 22px 22px; mask-size: 22px 22px; transition: opacity .2s; }
-[data-look="grid"][data-fx="cell"] #fx-cell, [data-look="grid"][data-fx="both"] #fx-cell { display: block; }
-[data-look="grid"][data-fx="dots"] #fx-dots, [data-look="grid"][data-fx="both"] #fx-dots { display: block; }
-[data-look="grid"] .wrap { position: relative; z-index: 1; }
