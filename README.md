@@ -2,7 +2,7 @@
 
 Personal site, live at https://wannita901.github.io. Astro, plain CSS, GitHub Pages. Push to `main` deploys (~1 min).
 
-To take the site down temporarily: rename the repo (e.g. `gh repo rename wannita901-site`), make it private, and delete Pages via `gh api -X DELETE repos/wannita901/<name>/pages`. Reverse to bring it back.
+To take the site down temporarily: make the repo private (Settings → Danger zone → Change visibility); Pages stops serving within a few minutes. To bring it back: make it public again and rerun the deploy workflow from the Actions tab.
 
 ## Add things
 
