@@ -43,7 +43,7 @@ const fullTitle = title ? `${title} · ${site.shortName}` : site.name;
     <div class="sheet">
       <div class="wrap">
         <Nav />
-        <main id="main"><slot /></main>
+        <main id="main" tabindex="-1"><slot /></main>
         <Footer />
       </div>
     </div>

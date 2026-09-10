@@ -37,7 +37,7 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
     <Section title="Writing" more={{ label: 'All posts', href: '/blog/' }}>
       <div class="stack" style="gap: 8px;">
         {posts.map((p) => (
-          <div class="line"><span class="arrow">→</span><a href={`/blog/${p.id}/`} class="plain one post">{p.data.title}</a><span class="mono" style="flex-shrink: 0;">{month(p.data.date)}</span></div>
+          <div class="line"><span class="arrow">→</span><a href={`/blog/${p.id}/`} class="plain one post">{p.data.title}</a><span class="mono date">{month(p.data.date)}</span></div>
         ))}
       </div>
     </Section>
@@ -78,5 +78,6 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
   .chip svg { width: 16px; height: 16px; fill: currentColor; }
   .arrow { color: var(--accent); flex-shrink: 0; }
   .post { font-family: var(--serif); font-size: 19px; }
-  @media (max-width: 560px) { .hero { flex-direction: column; gap: 16px; } .hero h1 { font-size: 32px !important; } .avatar { width: 96px; height: 96px; } }
+  .date { flex-shrink: 0; }
+  @media (max-width: 560px) { .hero { flex-direction: column; gap: 16px; } .hero h1 { font-size: 32px !important; } .avatar { width: 96px; height: 96px; } .post { order: 3; } .date { margin-left: auto; } }
 </style>

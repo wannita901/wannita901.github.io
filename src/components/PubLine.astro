@@ -2,7 +2,7 @@
 import type { Pub } from '../lib/bib';
 interface Props { pub: Pub; }
 const { pub } = Astro.props;
-const href = pub.links.find((l) => l.label === 'arxiv' || l.label === 'doi' || l.label === 'pdf')?.href ?? `/publications/#${pub.key}`;
+const href = ['arxiv', 'doi', 'pdf'].map((k) => pub.links.find((l) => l.label === k)).find(Boolean)?.href ?? `/publications/#${pub.key}`;
 ---
 <div class="line">
   <span class="tag venue" title={pub.venue}>{pub.short}</span>
