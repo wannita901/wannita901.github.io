@@ -1,10 +1,11 @@
 ---
 interface Props { title: string; more?: { label: string; href: string }; }
 const { title, more } = Astro.props;
+const id = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 ---
-<section class="stack" style="gap: 16px;">
+<section class="stack" style="gap: 16px; scroll-margin-top: 24px;" id={id}>
   <div class="row keep">
-    <h2><span class="hash">#</span>{title}</h2>
+    <h2><a href={`#${id}`} class="hash plain" aria-label={`Link to ${title}`}>#</a>{title}</h2>
     {more && <a href={more.href} style="font-size: 15px;">{more.label} →</a>}
   </div>
   <div class="rule"></div>

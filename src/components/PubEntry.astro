@@ -7,9 +7,11 @@ const MAX = 7;
 const etAl = pub.authors.length > MAX;
 const shown = etAl ? pub.authors.slice(0, 6) : pub.authors;
 const hiddenMe = etAl ? pub.authors.slice(6).find((a) => me.test(a)) : undefined;
+const pick = (l: string) => pub.links.find((x) => x.label === l)?.href;
+const href = pick('arxiv') ?? pick('doi') ?? pick('pdf');
 ---
 <div class="pub" id={pub.key}>
-  <span class="t">{pub.title}</span>
+  {href ? <a href={href} class="t plain">{pub.title}</a> : <span class="t">{pub.title}</span>}
   <span class="a">
     {shown.map((a, i) => (<>{i > 0 && ', '}{me.test(a) ? <b>{a}</b> : a}</>))}{hiddenMe && <>, …, <b>{hiddenMe}</b></>}{etAl && <> et al.</>}
     {pub.venue && <> · {pub.venue}</>}

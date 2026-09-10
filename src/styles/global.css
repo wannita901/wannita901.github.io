@@ -33,6 +33,7 @@ img, svg { max-width: 100%; }
 .rule { height: 1px; background: var(--rule); }
 .stack { display: flex; flex-direction: column; }
 .hash { font-family: var(--mono); font-size: 20px; color: var(--accent); margin-right: 10px; font-weight: 400; }
+a.hash:hover { color: var(--fg); }
 .btn { display: inline-flex; align-items: center; height: 26px; padding: 0 9px; border: 1px solid var(--rule); border-radius: 4px; font-family: var(--mono); font-size: 12px; color: var(--muted); text-decoration: none; }
 .btn:hover { border-color: var(--accent); color: var(--accent); }
 .tag { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-family: var(--mono); font-size: 12px; }
@@ -63,7 +64,7 @@ img, svg { max-width: 100%; }
 
 /* one-line list rows (home) */
 .line { display: flex; gap: 12px; align-items: baseline; font-size: 16px; min-width: 0; }
-.one { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.one { min-width: 0; }
 .dots { flex-grow: 1; border-bottom: 1px dotted color-mix(in oklab, var(--muted) 55%, transparent); transform: translateY(-5px); min-width: 24px; }
 
 /* ---------- looks ---------- */
@@ -107,7 +108,7 @@ main:focus { outline: none; }
 /* one-line rows wrap on phones instead of truncating */
 @media (max-width: 560px) {
   .line { flex-wrap: wrap; row-gap: 2px; }
-  .line .one { white-space: normal; overflow: visible; text-overflow: clip; flex-basis: 100%; }
+  .line .one { flex-basis: 100%; }
   .line .dots { display: none; }
   .line .mono a, .lnks a { display: inline-block; padding: 4px 0; }
 }
