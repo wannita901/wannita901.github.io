@@ -38,11 +38,12 @@ const fullTitle = title ? `${title} · ${site.shortName}` : site.name;
     </script>
   </head>
   <body>
+    <a class="skip" href="#main">Skip to content</a>
     <div class="page-stack">
     <div class="sheet">
       <div class="wrap">
         <Nav />
-        <slot />
+        <main id="main"><slot /></main>
         <Footer />
       </div>
     </div>

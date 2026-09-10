@@ -2,7 +2,7 @@
 name: "HULA"
 emoji: "🤝"
 group: research
-order: 3
+order: 1
 tagline: "human-in-the-loop coding agents at Atlassian"
 home: true
 links:

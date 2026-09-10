@@ -18,5 +18,5 @@ const primary = links[0]?.[1] ?? '/projects/';
   .lnks { flex-shrink: 0; }
   .lnks a { color: var(--muted); }
   .lnks a:hover { color: var(--accent); }
-  @media (max-width: 560px) { .one, .dots { display: none; } }
+  @media (max-width: 560px) { .one { order: 5; padding-left: 36px; color: var(--muted); font-size: 15px; } .lnks { margin-left: auto; } }
 </style>
