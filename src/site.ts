@@ -15,7 +15,11 @@ export const site = {
     ],
   },
   openTo: 'Open to research collaborations, talks, and student supervision.',
-  outside: 'Outside work: ▤ reader · ✦ community service · ⚑ hackathons',
+  outside: [
+    { icon: 'book', label: 'reader' },
+    { icon: 'star', label: 'community service' },
+    { icon: 'flag', label: 'hackathons' },
+  ],
   email: 'wannita.takerngsaksiri@deakin.edu.au',
   // icon = key in src/components/icons.ts
   socials: [

@@ -5,15 +5,13 @@ const { event: e } = Astro.props;
 const { position, track, venue, link } = e.data;
 ---
 <div class="line">
-  <span class="mono year">{e.data.date.getFullYear()}</span>
   <b class="pos">{link ? <a href={link} class="plain">{position}</a> : position}</b>
   {track && <span class="one fg2">{track}</span>}
   <span class="dots"></span>
   <span class="mono venue">{venue}</span>
 </div>
 <style>
-  .year { width: 44px; flex-shrink: 0; }
   .pos { font-weight: 500; flex-shrink: 0; }
   .venue { flex-shrink: 0; }
-  @media (max-width: 560px) { .one { order: 3; padding-left: 56px; color: var(--muted); font-size: 15px; } .venue { order: 4; margin-left: 56px; } .pos a { display: inline-block; padding: 2px 0; } }
+  @media (max-width: 560px) { .one { order: 3; padding-left: 0; color: var(--muted); font-size: 15px; } .venue { order: 4; } .pos a { display: inline-block; padding: 2px 0; } }
 </style>

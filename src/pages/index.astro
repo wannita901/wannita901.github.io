@@ -29,8 +29,12 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
         </div>
       </div>
       <p class="fg2" style="font-size: 19px; line-height: 1.55;">{site.bio}</p>
-      <p class="prev"><span class="mono">previously</span> · data scientist intern at <a href={site.previously.intern.href} class="chip"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[site.previously.intern.icon]} />{site.previously.intern.label}</a> · data scientist at {site.previously.roles.map((r, i) => (<>{i > 0 && ' and '}<a href={r.href} class="chip"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[r.icon]} />{r.label}</a></>))}</p>
-      <p class="muted" style="font-size: 16px;"><span class="mono">outside work</span> · {site.outside.replace(/^Outside work:\s*/, '')}</p>
+      <dl class="meta">
+        <dt class="mono">previously</dt>
+        <dd>data scientist intern at <a href={site.previously.intern.href} class="tl"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[site.previously.intern.icon]} />{site.previously.intern.label}</a> · data scientist at {site.previously.roles.map((r, i) => (<>{i > 0 && ' and '}<a href={r.href} class="tl"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[r.icon]} />{r.label}</a></>))}</dd>
+        <dt class="mono">outside work</dt>
+        <dd>{site.outside.map((o) => (<span class="ow"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[o.icon]} />{o.label}</span>))}</dd>
+      </dl>
     </div>
   </header>
 
@@ -75,10 +79,15 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
   .rolelink:first-of-type { margin-left: 4px; }
   .rolelink svg { width: 16px; height: 16px; fill: currentColor; }
   .rolelink:hover { color: var(--fg); }
-  .prev { font-size: 16px; color: var(--muted); line-height: 1.9; }
-  .chip { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 8px; margin: 0 1px; border: 1px solid var(--rule); border-radius: 4px; font-family: var(--mono); font-size: 12px; color: var(--fg-2); text-decoration: none; vertical-align: middle; }
-  .chip:hover { border-color: var(--accent); color: var(--accent); }
-  .chip svg { width: 16px; height: 16px; fill: currentColor; }
+  .meta { margin: 0; display: grid; grid-template-columns: 104px 1fr; gap: 6px 18px; font-size: 16px; color: var(--muted); line-height: 1.7; align-items: baseline; }
+  .meta dt { padding-top: 3px; }
+  .meta dd { margin: 0; display: flex; flex-wrap: wrap; gap: 2px 8px; align-items: center; }
+  .tl { display: inline-flex; align-items: center; gap: 5px; color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent-soft); }
+  .tl:hover { border-bottom-color: var(--accent); }
+  .tl svg { width: 14px; height: 14px; fill: currentColor; }
+  .ow { display: inline-flex; align-items: center; gap: 6px; margin-right: 8px; }
+  .ow svg { width: 15px; height: 15px; }
+  @media (max-width: 560px) { .meta { grid-template-columns: 1fr; gap: 2px; } .meta dd { margin-bottom: 8px; } }
   .arrow { color: var(--accent); flex-shrink: 0; }
   .post { font-family: var(--serif); font-size: 19px; }
   .date { flex-shrink: 0; }
