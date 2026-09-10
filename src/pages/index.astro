@@ -25,8 +25,8 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
         <div class="role">{site.role}</div>
       </div>
       <p class="fg2" style="font-size: 19px; line-height: 1.55;">{site.bio}</p>
-      <p class="prev"><span class="mono">previously</span>, data scientist intern at <a href={site.previously.intern.href} class="chip"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[site.previously.intern.icon]} />{site.previously.intern.label}</a>, and data scientist at {site.previously.roles.map((r, i) => (<>{i > 0 && ' and '}<a href={r.href} class="chip"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[r.icon]} />{r.label}</a></>))}.</p>
-      <p class="muted" style="font-size: 16px;">{site.outside}</p>
+      <p class="prev"><span class="mono">previously</span> · data scientist intern at <a href={site.previously.intern.href} class="chip"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[site.previously.intern.icon]} />{site.previously.intern.label}</a> · data scientist at {site.previously.roles.map((r, i) => (<>{i > 0 && ' and '}<a href={r.href} class="chip"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[r.icon]} />{r.label}</a></>))}</p>
+      <p class="muted" style="font-size: 16px;"><span class="mono">outside work</span> · {site.outside.replace(/^Outside work:\s*/, '')}</p>
     </div>
   </header>
 
@@ -67,7 +67,7 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
   .hero { display: flex; gap: 32px; align-items: flex-start; }
   .avatar { flex-shrink: 0; border-radius: 8px; image-rendering: pixelated; }
   .role { font-family: var(--mono); font-size: 14px; color: var(--accent); letter-spacing: .02em; }
-  .prev { font-size: 15px; color: var(--muted); line-height: 1.9; }
+  .prev { font-size: 16px; color: var(--muted); line-height: 1.9; }
   .chip { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 8px; margin: 0 1px; border: 1px solid var(--rule); border-radius: 4px; font-family: var(--mono); font-size: 12px; color: var(--fg-2); text-decoration: none; vertical-align: middle; }
   .chip:hover { border-color: var(--accent); color: var(--accent); }
   .chip svg { width: 16px; height: 16px; fill: currentColor; }
