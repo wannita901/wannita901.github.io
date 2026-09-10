@@ -31,7 +31,7 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
       <p class="fg2" style="font-size: 19px; line-height: 1.55;">{site.bio}</p>
       <dl class="meta">
         <dt class="mono">previously</dt>
-        <dd>data scientist intern at <a href={site.previously.intern.href} class="tl"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[site.previously.intern.icon]} />{site.previously.intern.label}</a> · data scientist at {site.previously.roles.map((r, i) => (<>{i > 0 && ' and '}<a href={r.href} class="tl"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[r.icon]} />{r.label}</a></>))}</dd>
+        <dd>data scientist intern at <a href={site.previously.intern.href} class="tl"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[site.previously.intern.icon]} />{site.previously.intern.label}</a>, and data scientist at {site.previously.roles.map((r, i) => (<>{i > 0 && ' and '}<a href={r.href} class="tl"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[r.icon]} />{r.label}</a></>))}</dd>
         <dt class="mono">outside work</dt>
         <dd>{site.outside.map((o) => (<span class="ow"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[o.icon]} />{o.label}</span>))}</dd>
       </dl>
@@ -83,9 +83,9 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
   .meta { margin: 0; display: grid; grid-template-columns: 96px 1fr; gap: 6px 14px; font-size: 16px; color: var(--muted); line-height: 1.7; align-items: baseline; }
   .meta dt { padding-top: 3px; }
   .meta dd { margin: 0; }
-  .tl { display: inline-flex; align-items: center; gap: 5px; color: var(--muted); text-decoration: none; vertical-align: baseline; }
-  .tl:hover { color: var(--accent); }
-  .tl svg { width: 14px; height: 14px; fill: currentColor; }
+  .tl { display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 6px; margin: 0 1px; border: 1px solid var(--rule); border-radius: 4px; font-family: var(--mono); font-size: 12px; color: var(--muted); text-decoration: none; vertical-align: middle; }
+  .tl:hover { border-color: var(--accent); color: var(--accent); }
+  .tl svg { width: 13px; height: 13px; fill: currentColor; }
   .ow { display: inline-flex; align-items: center; gap: 6px; margin-right: 12px; white-space: nowrap; }
   .ow:last-child { margin-right: 0; }
   .ow svg { width: 15px; height: 15px; }
