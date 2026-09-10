@@ -23,9 +23,8 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
       <div class="stack" style="gap: 8px;">
         <h1 style="font-size: 44px;">{site.name}</h1>
         <div class="role">{site.role}
-          <span aria-hidden="true">·</span>
           {site.socials.filter((s) => s.label === 'Email').map((s) => (
-            <a href={s.href} class="rolelink" aria-label={s.label} title={s.label}><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[s.icon]} /></a>
+            <span class="rl"><span aria-hidden="true">·</span><a href={s.href} class="rolelink" aria-label={s.label} title={s.label}><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[s.icon]} /></a></span>
           ))}
         </div>
       </div>
@@ -77,6 +76,7 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
   .hero > .stack { min-width: 0; flex: 1 1 auto; }
   .avatar { flex-shrink: 0; border-radius: 8px; image-rendering: pixelated; }
   .role { font-family: var(--mono); font-size: 14px; color: var(--accent); letter-spacing: .02em; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .rl { display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; }
   .rolelink { display: inline-flex; padding: 4px; margin: -4px 0; color: var(--accent); }
   .rolelink svg { width: 16px; height: 16px; fill: currentColor; }
   .rolelink:hover { color: var(--fg); }
@@ -93,5 +93,6 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
   .arrow { color: var(--accent); flex-shrink: 0; }
   .post { font-family: var(--serif); font-size: 19px; }
   .date { flex-shrink: 0; }
-  @media (max-width: 560px) { .hero { flex-direction: column; gap: 16px; } .hero h1 { font-size: 32px !important; } .avatar { width: 96px; height: 96px; } .post { order: 3; } .date { margin-left: auto; } }
+  @media (max-width: 720px) { .avatar { width: 96px; height: 96px; } .hero { gap: 24px; } }
+  @media (max-width: 560px) { .hero { flex-direction: column; gap: 16px; } .hero h1 { font-size: 32px !important; } .post { order: 3; } .date { margin-left: auto; } }
 </style>
