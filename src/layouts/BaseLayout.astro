@@ -39,6 +39,14 @@ const fullTitle = title ? `${title} · ${site.shortName}` : site.name;
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
+    <script is:inline>
+      // ponytail: outbound links open in a new tab; one rule instead of per-component attributes.
+      addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('a[href^="http"]').forEach(function (a) {
+          if (a.host !== location.host) { a.target = '_blank'; a.rel = 'noopener'; }
+        });
+      });
+    </script>
     <div class="page-stack">
     <div class="sheet">
       <div class="wrap">

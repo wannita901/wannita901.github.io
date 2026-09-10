@@ -22,11 +22,19 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
     <div class="stack" style="gap: 16px;">
       <div class="stack" style="gap: 8px;">
         <h1 style="font-size: 44px;">{site.name}</h1>
-        <div class="role">{site.role}</div>
+        <div class="role">{site.role}
+          {site.socials.filter((s) => s.label === 'Email').map((s) => (
+            <span class="rl"><span aria-hidden="true">·</span><a href={s.href} class="rolelink" aria-label={s.label} title={s.label}><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[s.icon]} /></a></span>
+          ))}
+        </div>
       </div>
       <p class="fg2" style="font-size: 19px; line-height: 1.55;">{site.bio}</p>
-      <p class="prev"><span class="mono">previously</span> · data scientist intern at <a href={site.previously.intern.href} class="chip"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[site.previously.intern.icon]} />{site.previously.intern.label}</a> · data scientist at {site.previously.roles.map((r, i) => (<>{i > 0 && ' and '}<a href={r.href} class="chip"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[r.icon]} />{r.label}</a></>))}</p>
-      <p class="muted" style="font-size: 16px;"><span class="mono">outside work</span> · {site.outside.replace(/^Outside work:\s*/, '')}</p>
+      <dl class="meta">
+        <dt class="mono">previously</dt>
+        <dd>data scientist intern at <a href={site.previously.intern.href} class="tl"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[site.previously.intern.icon]} />{site.previously.intern.label}</a>, and data scientist at {site.previously.roles.map((r, i) => (<>{i > 0 && ' and '}<a href={r.href} class="tl"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[r.icon]} />{r.label}</a></>))}</dd>
+        <dt class="mono">outside work</dt>
+        <dd>{site.outside.map((o) => (<span class="ow"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[o.icon]} />{o.label}</span>))}</dd>
+      </dl>
     </div>
   </header>
 
@@ -65,14 +73,26 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
 </BaseLayout>
 <style>
   .hero { display: flex; gap: 32px; align-items: flex-start; }
+  .hero > .stack { min-width: 0; flex: 1 1 auto; }
   .avatar { flex-shrink: 0; border-radius: 8px; image-rendering: pixelated; }
-  .role { font-family: var(--mono); font-size: 14px; color: var(--accent); letter-spacing: .02em; }
-  .prev { font-size: 16px; color: var(--muted); line-height: 1.9; }
-  .chip { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 8px; margin: 0 1px; border: 1px solid var(--rule); border-radius: 4px; font-family: var(--mono); font-size: 12px; color: var(--fg-2); text-decoration: none; vertical-align: middle; }
-  .chip:hover { border-color: var(--accent); color: var(--accent); }
-  .chip svg { width: 16px; height: 16px; fill: currentColor; }
+  .role { font-family: var(--mono); font-size: 14px; color: var(--accent); letter-spacing: .02em; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .rl { display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; }
+  .rolelink { display: inline-flex; padding: 4px; margin: -4px 0; color: var(--accent); }
+  .rolelink svg { width: 16px; height: 16px; fill: currentColor; }
+  .rolelink:hover { color: var(--fg); }
+  .meta { margin: 0; display: grid; grid-template-columns: 96px 1fr; gap: 6px 14px; font-size: 16px; color: var(--muted); line-height: 1.7; align-items: baseline; }
+  .meta dt { padding-top: 3px; }
+  .meta dd { margin: 0; }
+  .tl { display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 6px; margin: 0 1px; border: 1px solid var(--rule); border-radius: 4px; font-family: var(--mono); font-size: 12px; color: var(--muted); text-decoration: none; vertical-align: middle; }
+  .tl:hover { border-color: var(--accent); color: var(--accent); }
+  .tl svg { width: 13px; height: 13px; fill: currentColor; }
+  .ow { display: inline-flex; align-items: center; gap: 6px; margin-right: 12px; white-space: nowrap; }
+  .ow:last-child { margin-right: 0; }
+  .ow svg { width: 15px; height: 15px; }
+  @media (max-width: 560px) { .meta { grid-template-columns: 1fr; gap: 2px; } .meta dd { margin-bottom: 8px; } }
   .arrow { color: var(--accent); flex-shrink: 0; }
   .post { font-family: var(--serif); font-size: 19px; }
   .date { flex-shrink: 0; }
-  @media (max-width: 560px) { .hero { flex-direction: column; gap: 16px; } .hero h1 { font-size: 32px !important; } .avatar { width: 96px; height: 96px; } .post { order: 3; } .date { margin-left: auto; } }
+  @media (max-width: 720px) { .avatar { width: 96px; height: 96px; } .hero { gap: 24px; } }
+  @media (max-width: 560px) { .hero { flex-direction: column; gap: 16px; } .hero h1 { font-size: 32px !important; } .post { order: 3; } .date { margin-left: auto; } }
 </style>

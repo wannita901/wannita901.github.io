@@ -3,7 +3,13 @@ import { siGithub, siGooglescholar, siHuggingface, siOrcid, siX, siAtlassian } f
 
 const p = (d: string) => `<path d="${d}"/>`;
 
+// stroke icons (outside-work items); rendered with class="stroke"
+const s = (d: string) => `<g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${d}</g>`;
+
 export const icons: Record<string, string> = {
+  book: s('<path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/>'),
+  star: s('<path d="M12 3l2.4 5.6 6.1.5-4.6 4 1.4 6-5.3-3.2-5.3 3.2 1.4-6-4.6-4 6.1-.5z"/>'),
+  flag: s('<path d="M5 21V4"/><path d="M5 4h11l-1.5 3.5L16 11H5"/>'),
   github: p(siGithub.path),
   scholar: p(siGooglescholar.path),
   huggingface: p(siHuggingface.path),

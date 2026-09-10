@@ -47,7 +47,7 @@ link: https://...
 ---
 ```
 
-**Bio, "outside work" line, supervision text, social links** → `src/site.ts`. To re-enable X, uncomment its line there.
+**Bio, "previously" employers, "outside work" items, supervision text, social links** → `src/site.ts`. To re-enable X, uncomment its line there.
 **Avatar** → `public/avatar.svg` (32×32 pixel art; generator kept at `public/avatar-source.mjs.txt`, variant Y1). Replace the file to change it.
 
 ## Maintenance mode

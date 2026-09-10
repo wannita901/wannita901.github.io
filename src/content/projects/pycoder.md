@@ -10,4 +10,4 @@ links:
   github: https://github.com/awsm-research/pycoder
   paper: https://arxiv.org/abs/2211.04673
 ---
-syntax-aware on-the-fly Python code completion; models and datasets with ~150k downloads.
+syntax-aware on-the-fly Python code completion.
