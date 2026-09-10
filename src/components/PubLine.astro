@@ -2,10 +2,11 @@
 import type { Pub } from '../lib/bib';
 interface Props { pub: Pub; }
 const { pub } = Astro.props;
+const href = pub.links.find((l) => l.label === 'arxiv' || l.label === 'doi' || l.label === 'pdf')?.href ?? `/publications/#${pub.key}`;
 ---
 <div class="line">
   <span class="tag venue" title={pub.venue}>{pub.short}</span>
-  <a href={`/publications/#${pub.key}`} class="plain one" style="flex-grow: 1;">{pub.title}</a>
+  <a href={href} class="plain one" style="flex-grow: 1;">{pub.title}</a>
   <span class="mono year">{pub.year}</span>
 </div>
 <style>
