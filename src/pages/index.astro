@@ -4,7 +4,6 @@ import Section from '../components/Section.astro';
 import ProjectLine from '../components/ProjectLine.astro';
 import PubLine from '../components/PubLine.astro';
 import EventRow from '../components/EventRow.astro';
-import ComingSoon from '../components/ComingSoon.astro';
 import SocialLinks from '../components/SocialLinks.astro';
 import { getCollection } from 'astro:content';
 import { loadPublications } from '../lib/bib';
@@ -26,20 +25,23 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
         <div class="role">{site.role}</div>
       </div>
       <p class="fg2" style="font-size: 19px; line-height: 1.55;">{site.bio}</p>
-      <p class="prev">previously, data scientist intern at <a href={site.previously.intern.href} class="chip"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[site.previously.intern.icon]} />{site.previously.intern.label}</a>, and data scientist at {site.previously.roles.map((r, i) => (<>{i > 0 && ' and '}<a href={r.href} class="chip"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[r.icon]} />{r.label}</a></>))}.</p>
+      <ul class="prev">
+        <li class="mono">Previously</li>
+        {site.previously.map((r) => (<li><a href={r.href} class="chip"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[r.icon]} />{r.label}</a><span>{r.role}</span></li>))}
+      </ul>
       <p class="muted" style="font-size: 16px;">{site.outside}</p>
     </div>
   </header>
 
-  <Section title="Writing" more={{ label: 'All posts', href: '/blog/' }}>
-    {posts.length === 0 ? <ComingSoon /> : (
+  {posts.length > 0 && (
+    <Section title="Writing" more={{ label: 'All posts', href: '/blog/' }}>
       <div class="stack" style="gap: 8px;">
         {posts.map((p) => (
-          <div class="line"><span class="arrow">→</span><a href={`/blog/${p.id}/`} class="plain one post">{p.data.title}</a><span class="mono" style="flex-shrink: 0;">{month(p.data.date)}</span></div>
+          <div class="line"><span class="arrow">→</span><a href={`/blog/${p.id}/`} class="plain one post">{p.data.title}</a><span class="mono date">{month(p.data.date)}</span></div>
         ))}
       </div>
-    )}
-  </Section>
+    </Section>
+  )}
 
   <Section title="Projects" more={{ label: 'All projects', href: '/projects/' }}>
     <div class="stack" style="gap: 8px;">{projects.map((p) => <ProjectLine project={p} />)}</div>
@@ -49,7 +51,7 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
     <div class="stack" style="gap: 8px;">{pubs.map((p) => <PubLine pub={p} />)}</div>
   </Section>
 
-  <Section title="Services">
+  <Section title="Community">
     <div class="stack" style="gap: 8px;">{events.map((e) => <EventRow event={e} />)}</div>
   </Section>
 
@@ -59,7 +61,7 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
 
   <Section title="Contact">
     <div class="stack" style="gap: 12px;">
-      <p class="fg2">Fastest is email: <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+      <p class="fg2">{site.openTo} Fastest is email: <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
       <SocialLinks />
     </div>
   </Section>
@@ -68,11 +70,14 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
   .hero { display: flex; gap: 32px; align-items: flex-start; }
   .avatar { flex-shrink: 0; border-radius: 8px; image-rendering: pixelated; }
   .role { font-family: var(--mono); font-size: 14px; color: var(--accent); letter-spacing: .02em; }
-  .prev { font-size: 16px; color: var(--muted); line-height: 1.9; }
-  .chip { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 8px; margin: 0 1px; border: 1px solid var(--rule); border-radius: 4px; font-family: var(--mono); font-size: 12px; color: var(--fg-2); text-decoration: none; vertical-align: middle; }
+  .prev { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; font-size: 15px; color: var(--muted); }
+  .prev li { display: inline-flex; align-items: center; gap: 8px; }
+  .prev li.mono { margin-right: 2px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 8px; border: 1px solid var(--rule); border-radius: 4px; font-family: var(--mono); font-size: 12px; color: var(--fg-2); text-decoration: none; }
   .chip:hover { border-color: var(--accent); color: var(--accent); }
   .chip svg { width: 16px; height: 16px; fill: currentColor; }
   .arrow { color: var(--accent); flex-shrink: 0; }
   .post { font-family: var(--serif); font-size: 19px; }
-  @media (max-width: 560px) { .hero { flex-direction: column; gap: 16px; } .hero h1 { font-size: 32px !important; } .avatar { width: 96px; height: 96px; } }
+  .date { flex-shrink: 0; }
+  @media (max-width: 560px) { .hero { flex-direction: column; gap: 16px; } .hero h1 { font-size: 32px !important; } .avatar { width: 96px; height: 96px; } .post { order: 3; } .date { margin-left: auto; } }
 </style>

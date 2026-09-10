@@ -1,11 +1,14 @@
 ---
 import { site } from '../site';
+import { getCollection } from 'astro:content';
 const path = Astro.url.pathname;
+const hasPosts = (await getCollection('blog', (p) => !p.data.draft)).length > 0;
+const items = site.nav.filter((n) => hasPosts || n.href !== '/blog/');
 ---
 <nav class="nav">
-  <a href="/" class="plain brand">{site.shortName}</a>
+  <a href="/" class="plain brand" aria-current={path === '/' ? 'page' : undefined}>{site.shortName}</a>
   <div class="items">
-    {site.nav.map((n) => (
+    {items.map((n) => (
       <a href={n.href} class="plain" aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.label}</a>
     ))}
     <button id="theme" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
@@ -25,7 +28,8 @@ const path = Astro.url.pathname;
   .nav { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px 24px; }
   .brand { font-family: var(--serif); font-size: 20px; font-weight: 500; }
   .items { display: flex; gap: 24px; font-size: 15px; align-items: center; }
-  .items a[aria-current="page"] { color: var(--accent); }
+  .items a { padding: 3px 0; }
+  .items a[aria-current="page"], .brand[aria-current="page"] { color: var(--accent); }
   button { background: none; border: 0; padding: 4px; margin: -4px; color: var(--muted); cursor: pointer; display: inline-flex; }
   button:hover { color: var(--accent); }
   @media (max-width: 480px) { .items { gap: 16px; font-size: 14px; } }

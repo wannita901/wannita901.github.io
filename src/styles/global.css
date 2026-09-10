@@ -45,7 +45,7 @@ img, svg { max-width: 100%; }
 .prose h3 { color: var(--fg); font-size: 21px; }
 .prose ul, .prose ol { margin: 0; padding-left: 24px; }
 .prose li + li { margin-top: 6px; }
-.prose blockquote { margin: 0; padding: 4px 0 4px 18px; border-left: 2px solid var(--accent); font-family: var(--serif); font-size: 20px; line-height: 1.5; }
+.prose blockquote { margin: 0; padding: 4px 0 4px 18px; border-left: 1px solid var(--accent); font-family: var(--serif); font-size: 20px; line-height: 1.5; }
 .prose code { font-family: var(--mono); font-size: 0.9em; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
 .prose pre { margin: 0; padding: 16px 18px; border-radius: 6px; font-size: 14px; line-height: 1.55; overflow-x: auto; }
 .prose pre code { background: none; padding: 0; font-size: inherit; }
@@ -64,7 +64,7 @@ img, svg { max-width: 100%; }
 /* one-line list rows (home) */
 .line { display: flex; gap: 12px; align-items: baseline; font-size: 16px; min-width: 0; }
 .one { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-.dots { flex-grow: 1; border-bottom: 1px dotted var(--rule); transform: translateY(-5px); min-width: 24px; }
+.dots { flex-grow: 1; border-bottom: 1px dotted color-mix(in oklab, var(--muted) 55%, transparent); transform: translateY(-5px); min-width: 24px; }
 
 /* ---------- looks ---------- */
 :root { --line: 27px; --pad-top: 40px; --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.4 0 0 0 0 0.36 0 0 0 0 0.3 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
@@ -94,3 +94,20 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; background-c
 @media (max-width: 560px) { .page-stack { width: calc(100% - 20px); margin: 0 auto; } }
 
 html:not([data-theme="dark"]) .avatar { mix-blend-mode: multiply; }
+
+/* browser surfaces */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+::selection { background: var(--accent-soft); color: var(--fg); }
+.skip { position: absolute; left: 16px; top: -48px; z-index: 10; background: var(--accent); color: var(--bg); padding: 8px 12px; border-radius: 4px; font-size: 14px; text-decoration: none; }
+.skip:focus { top: 16px; }
+main { display: flex; flex-direction: column; gap: 48px; }
+main:focus { outline: none; }
+@media (max-width: 480px) { main { gap: 36px; } }
+
+/* one-line rows wrap on phones instead of truncating */
+@media (max-width: 560px) {
+  .line { flex-wrap: wrap; row-gap: 2px; }
+  .line .one { white-space: normal; overflow: visible; text-overflow: clip; flex-basis: 100%; }
+  .line .dots { display: none; }
+  .line .mono a, .lnks a { display: inline-block; padding: 4px 0; }
+}

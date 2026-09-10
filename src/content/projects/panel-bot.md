@@ -2,7 +2,7 @@
 name: "panel-bot"
 emoji: "🎙️"
 group: side
-order: 2
+order: 3
 tagline: "AI panelist for live discussions"
 home: true
 links:
