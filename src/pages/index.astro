@@ -81,11 +81,11 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
   .rolelink:hover { color: var(--fg); }
   .meta { margin: 0; display: grid; grid-template-columns: 104px 1fr; gap: 6px 18px; font-size: 16px; color: var(--muted); line-height: 1.7; align-items: baseline; }
   .meta dt { padding-top: 3px; }
-  .meta dd { margin: 0; display: flex; flex-wrap: wrap; gap: 2px 8px; align-items: center; }
-  .tl { display: inline-flex; align-items: center; gap: 5px; color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent-soft); }
+  .meta dd { margin: 0; }
+  .tl { display: inline-flex; align-items: center; gap: 5px; color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent-soft); vertical-align: baseline; }
   .tl:hover { border-bottom-color: var(--accent); }
   .tl svg { width: 14px; height: 14px; fill: currentColor; }
-  .ow { display: inline-flex; align-items: center; gap: 6px; margin-right: 8px; }
+  .ow { display: inline-flex; align-items: center; gap: 6px; margin-right: 14px; white-space: nowrap; }
   .ow svg { width: 15px; height: 15px; }
   @media (max-width: 560px) { .meta { grid-template-columns: 1fr; gap: 2px; } .meta dd { margin-bottom: 8px; } }
   .arrow { color: var(--accent); flex-shrink: 0; }
