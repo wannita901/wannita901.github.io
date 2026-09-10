@@ -4,13 +4,14 @@ interface Props { pub: Pub; }
 const { pub } = Astro.props;
 const me = /Takerngsaksiri/;
 const MAX = 7;
-const shown = pub.authors.length > MAX ? pub.authors.slice(0, 6) : pub.authors;
 const etAl = pub.authors.length > MAX;
+const shown = etAl ? pub.authors.slice(0, 6) : pub.authors;
+const hiddenMe = etAl ? pub.authors.slice(6).find((a) => me.test(a)) : undefined;
 ---
 <div class="pub" id={pub.key}>
   <span class="t">{pub.title}</span>
   <span class="a">
-    {shown.map((a, i) => (<>{i > 0 && ', '}{me.test(a) ? <b>{a}</b> : a}</>))}{etAl && <> et al.</>}
+    {shown.map((a, i) => (<>{i > 0 && ', '}{me.test(a) ? <b>{a}</b> : a}</>))}{hiddenMe && <>, …, <b>{hiddenMe}</b></>}{etAl && <> et al.</>}
     {pub.venue && <> · {pub.venue}</>}
   </span>
   {pub.links.length > 0 && <div class="btns">{pub.links.map((l) => <a href={l.href} class="btn">{l.label}</a>)}</div>}
