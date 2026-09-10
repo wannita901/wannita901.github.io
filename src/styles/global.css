@@ -64,7 +64,7 @@ a.hash:hover { color: var(--fg); }
 
 /* one-line list rows (home) */
 .line { display: flex; gap: 12px; align-items: baseline; font-size: 16px; min-width: 0; }
-.one { min-width: 0; }
+.one { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .dots { flex-grow: 1; border-bottom: 1px dotted color-mix(in oklab, var(--muted) 55%, transparent); transform: translateY(-5px); min-width: 24px; }
 
 /* ---------- looks ---------- */
@@ -108,7 +108,7 @@ main:focus { outline: none; }
 /* one-line rows wrap on phones instead of truncating */
 @media (max-width: 560px) {
   .line { flex-wrap: wrap; row-gap: 2px; }
-  .line .one { flex-basis: 100%; }
+  .line .one { white-space: normal; overflow: visible; text-overflow: clip; flex-basis: 100%; }
   .line .dots { display: none; }
   .line .mono a, .lnks a { display: inline-block; padding: 4px 0; }
 }
