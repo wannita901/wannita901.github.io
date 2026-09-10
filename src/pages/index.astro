@@ -23,6 +23,7 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
       <div class="stack" style="gap: 8px;">
         <h1 style="font-size: 44px;">{site.name}</h1>
         <div class="role">{site.role}
+          <span aria-hidden="true">·</span>
           {site.socials.filter((s) => s.label === 'Email').map((s) => (
             <a href={s.href} class="rolelink" aria-label={s.label} title={s.label}><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[s.icon]} /></a>
           ))}
@@ -33,7 +34,7 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
         <dt class="mono">previously</dt>
         <dd>data scientist intern at <a href={site.previously.intern.href} class="tl"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[site.previously.intern.icon]} />{site.previously.intern.label}</a> · data scientist at {site.previously.roles.map((r, i) => (<>{i > 0 && ' and '}<a href={r.href} class="tl"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[r.icon]} />{r.label}</a></>))}</dd>
         <dt class="mono">outside work</dt>
-        <dd class="oneline">{site.outside.map((o) => (<span class="ow"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[o.icon]} />{o.label}</span>))}</dd>
+        <dd>{site.outside.map((o) => (<span class="ow"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[o.icon]} />{o.label}</span>))}</dd>
       </dl>
     </div>
   </header>
@@ -73,10 +74,10 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
 </BaseLayout>
 <style>
   .hero { display: flex; gap: 32px; align-items: flex-start; }
+  .hero > .stack { min-width: 0; flex: 1 1 auto; }
   .avatar { flex-shrink: 0; border-radius: 8px; image-rendering: pixelated; }
   .role { font-family: var(--mono); font-size: 14px; color: var(--accent); letter-spacing: .02em; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .rolelink { display: inline-flex; padding: 4px; margin: -4px 0; color: var(--accent); }
-  .rolelink:first-of-type { margin-left: 4px; }
   .rolelink svg { width: 16px; height: 16px; fill: currentColor; }
   .rolelink:hover { color: var(--fg); }
   .meta { margin: 0; display: grid; grid-template-columns: 96px 1fr; gap: 6px 14px; font-size: 16px; color: var(--muted); line-height: 1.7; align-items: baseline; }
@@ -87,9 +88,8 @@ const month = (d: Date) => d.toLocaleDateString('en-AU', { month: 'short', year:
   .tl svg { width: 14px; height: 14px; fill: currentColor; }
   .ow { display: inline-flex; align-items: center; gap: 6px; margin-right: 12px; white-space: nowrap; }
   .ow:last-child { margin-right: 0; }
-  dd.oneline { white-space: nowrap; }
   .ow svg { width: 15px; height: 15px; }
-  @media (max-width: 560px) { .meta { grid-template-columns: 1fr; gap: 2px; } .meta dd { margin-bottom: 8px; } dd.oneline { white-space: normal; } }
+  @media (max-width: 560px) { .meta { grid-template-columns: 1fr; gap: 2px; } .meta dd { margin-bottom: 8px; } }
   .arrow { color: var(--accent); flex-shrink: 0; }
   .post { font-family: var(--serif); font-size: 19px; }
   .date { flex-shrink: 0; }
