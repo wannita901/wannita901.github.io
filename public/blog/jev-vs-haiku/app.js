@@ -331,6 +331,7 @@ const SnakeGame = {
 /* ---------- Chess ---------- */
 // both colours use the solid glyphs (white ones are filled light and outlined); \uFE0E asks for text, not emoji, rendering
 const SOLID = { k: "♚", q: "♛", r: "♜", b: "♝", n: "♞", p: "♟" };
+const BAR = 16;  // px for the evaluation bar plus its gap
 const GLYPH = (ch) => SOLID[ch.toLowerCase()] + "\uFE0E";
 const TERM = { insufficient_material: "too few pieces left to mate", checkmate: "checkmate", threefold_repetition: "threefold repetition", time: "out of time", ply_cap: "move limit" };
 const cap = (s) => s[0].toUpperCase() + s.slice(1);
@@ -347,7 +348,7 @@ const ChessGame = {
     const left = el("div", "board"), right = el("div");
     const c = document.createElement("canvas");
     left.append(c);
-    const ctx = hiDPI(c, 416, 416);
+    const ctx = hiDPI(c, 416 + BAR, 416);  // evaluation bar on the left, then the board
     c.setAttribute("role", "img"); c.setAttribute("aria-label", "Chess board");
     const black = el("div", "clock"), white = el("div", "clock"), card = el("div", "movecard");
     const det = el("details", "out"), sum = el("summary"), count = el("span", "mono"), log = el("div", "log");
@@ -384,7 +385,15 @@ const ChessGame = {
     }
     const lp = last >= 0 ? g.plies[last] : null, hl = lp ? [lp[2].slice(0, 2), lp[2].slice(2, 4)] : [];
     const rows = fen.split("/");
-    c.clearRect(0, 0, 416, 416);
+    c.clearRect(0, 0, 416 + BAR, 416);
+    if (R.overlay) {  // Stockfish evaluation bar, white's share from the bottom (logistic on centipawns, as on lichess)
+      const cp = lp && lp[10] != null ? lp[10] : 0, white = 1 / (1 + Math.exp(-cp / 250));
+      c.fillStyle = "#1C1917"; c.fillRect(0, 0, BAR - 5, 416);
+      c.fillStyle = "#FBF8F1"; c.fillRect(0, 416 * (1 - white), BAR - 5, 416 * white);
+      c.fillStyle = css("--muted"); c.fillRect(0, 207.5, BAR - 5, 1);  // the level line
+      c.strokeStyle = css("--muted"); c.lineWidth = 1; c.strokeRect(0.5, 0.5, BAR - 6, 415);  // outline, so the white share shows on paper
+    }
+    c.save(); c.translate(BAR, 0);
     for (let r = 0; r < 8; r++) {
       let f = 0;
       for (const ch of rows[r]) {
@@ -416,6 +425,7 @@ const ChessGame = {
       c.textAlign = "left"; c.fillText(String(8 - i), 3, i * sq + 12);
     }
     c.globalAlpha = 1;
+    c.restore();
     for (const side of ["black", "white"]) {
       const box = v[side], name = g[side], low = clock[side] < 3000;
       box.className = `clock ${name}` + (thinking >= 0 && g.plies[thinking][0] === name ? " thinking" : "") + (low ? " low" : "");
@@ -433,7 +443,7 @@ const ChessGame = {
     const row = (n) => `<tr><td><span class="nw"><span class="key ${n}"></span>${cap(n)}</span></td><td class="num">${s[n].won} / ${s[n].drawn} / ${s[n].lost}</td><td class="num">${s[n].acpl}</td><td class="num">${pc(s[n].best_rate)}</td><td class="num">${(s[n].latency_p50_ms / 1000).toFixed(2)} s</td></tr>`;
     return `<table><thead><tr><th scope="col">Player</th><th class="num">Won / drawn / lost</th><th class="num">Avg loss (cp)</th><th class="num">Engine's best move</th><th class="num">Time per move</th></tr></thead><tbody>${row("jev")}${row("haiku")}</tbody></table>`;
   },
-  note: "Clocks run only while that side's model is answering. The log counts plies (single moves), opening included. cp = centipawns: 100 is one pawn of value lost against Stockfish's best move.",
+  note: "The bar left of the board is Stockfish's evaluation: the more white it shows, the better White stands. Clocks run only while that side's model is answering. The log counts plies (single moves), opening included. cp = centipawns: 100 is one pawn of value lost against Stockfish's best move.",
 };
 
 /* ---------- Minesweeper ---------- */

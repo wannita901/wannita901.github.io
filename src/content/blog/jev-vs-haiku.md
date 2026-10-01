@@ -13,10 +13,10 @@ js: ["/blog/jev-vs-haiku/data/chess.js", "/blog/jev-vs-haiku/data/codenames.js",
 <li><strong>Models.</strong> Jev 1.13 through TypeSafe's API; Claude Haiku 4.5 without extended thinking.</li>
 <li><strong>Games.</strong> Each one tests a different side of Jev:
 <ul>
-<li><a href="#snake" class="plain"><em>Snake</em></a>: can it keep up when the game does not wait for an answer?</li>
-<li><a href="#chess" class="plain"><em>Chess</em></a>: does picking from a list of legal moves hold up against a tight clock?</li>
-<li><a href="#minesweeper" class="plain"><em>Minesweeper</em></a>: are its probabilities good enough to act on, when one wrong cell costs a life?</li>
-<li><a href="#codenames" class="plain"><em>Codenames</em></a>: how well does it link a clue to words, the task closest to what Jev is built for?</li>
+<li><a href="#snake" class="plain"><em>Snake</em></a>: how does answer speed affect the score in real time?</li>
+<li><a href="#chess" class="plain"><em>Chess</em></a>: how much value do its moves lose under a fast clock?</li>
+<li><a href="#minesweeper" class="plain"><em>Minesweeper</em></a>: how often are the cells it rates safe really safe?</li>
+<li><a href="#codenames" class="plain"><em>Codenames</em></a>: how many of the spymaster's intended words does it find?</li>
 </ul>
 </li>
 <li><strong>Ground rules.</strong> Both models get the same text and the same options. Haiku answers in JSON with a confidence it states itself; Jev returns a probability for every option.</li>
