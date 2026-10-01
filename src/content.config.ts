@@ -9,6 +9,9 @@ const blog = defineCollection({
     description: z.string(),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
+    wide: z.boolean().default(false),                 // wider sheet for posts with figures or tables
+    css: z.array(z.string()).default([]),             // extra stylesheets (paths under public/)
+    js: z.array(z.string()).default([]),              // extra scripts, loaded in order after the post
   }),
 });
 

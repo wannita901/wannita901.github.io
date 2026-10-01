@@ -11,13 +11,15 @@ const { post, prev, next } = Astro.props;
 const { Content } = await render(post);
 const fmt = (d: Date) => d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
 ---
-<BaseLayout title={post.data.title} description={post.data.description}>
+<BaseLayout title={post.data.title} description={post.data.description} wide={post.data.wide}>
+  {post.data.css.map((href) => <link slot="head" rel="stylesheet" href={href} />)}
   <header class="stack" style="gap: 14px;">
     <a href="/blog/" class="mono plain">← Writing</a>
     <h1>{post.data.title}</h1>
     <div class="meta"><span class="mono">{fmt(post.data.date)}</span><span class="mono">·</span><span class="mono">{readingTime(post.body ?? '')}</span>{post.data.tags.map((t) => <span class="tag">{t}</span>)}</div>
   </header>
   <article class="prose"><Content /></article>
+  {post.data.js.map((src) => <script is:inline src={src}></script>)}
   <div class="rule"></div>
   <nav class="row" style="font-size: 15px;">
     <span>{prev && <a href={`/blog/${prev.id}/`} class="plain">← {prev.data.title}</a>}</span>

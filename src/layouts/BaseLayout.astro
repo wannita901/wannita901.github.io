@@ -4,14 +4,16 @@ import '@fontsource/newsreader/500.css';
 import '@fontsource/newsreader/400-italic.css';
 import '@fontsource/ibm-plex-sans/400.css';
 import '@fontsource/ibm-plex-sans/500.css';
+import '@fontsource/ibm-plex-sans/400-italic.css';
 import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import { site } from '../site';
 
-interface Props { title?: string; description?: string; }
-const { title, description = site.description } = Astro.props;
+interface Props { title?: string; description?: string; wide?: boolean; }
+const { title, description = site.description, wide = false } = Astro.props;
 const fullTitle = title ? `${title} · ${site.shortName}` : site.name;
 ---
 <!doctype html>
@@ -26,6 +28,7 @@ const fullTitle = title ? `${title} · ${site.shortName}` : site.name;
     <meta property="og:type" content="website" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <slot name="head" />
     <script is:inline>
       // ponytail: theme = saved choice, else OS preference. Runs before paint to avoid flash.
       (function () {
@@ -47,7 +50,7 @@ const fullTitle = title ? `${title} · ${site.shortName}` : site.name;
         });
       });
     </script>
-    <div class="page-stack">
+    <div class={wide ? "page-stack wide" : "page-stack"}>
     <div class="sheet">
       <div class="wrap">
         <Nav />
