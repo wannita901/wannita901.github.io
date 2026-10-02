@@ -14,7 +14,6 @@
 
 /* prose */
 .prose { display: flex; flex-direction: column; gap: 20px; font-size: 18px; line-height: 1.7; color: var(--fg-2); }
-.prose > p, .prose > ul { max-width: 68ch; }
 .prose h2 { color: var(--fg); margin-top: 12px; }
 .prose h2::before { content: "#"; font-family: var(--mono); font-size: 20px; color: var(--accent); margin-right: 10px; font-weight: 400; }
 .prose strong { color: var(--fg); font-weight: 500; }
@@ -46,7 +45,7 @@ tr.on td { color: var(--fg); background: color-mix(in srgb, var(--accent-soft) 7
   height: 32px; padding: 0 14px; cursor: pointer; transition: border-color .15s, background-color .15s, color .15s; }
 .seg button:hover { border-color: var(--accent); color: var(--accent); }
 .seg button[aria-checked="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
-.help { font-size: 14px; color: var(--muted); max-width: 68ch; min-height: 1.5em; }
+.help { font-size: 14px; color: var(--muted); min-height: 1.5em; }
 
 .picker { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 10px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
 .picker .stepper { display: inline-flex; align-items: center; gap: 4px; }
