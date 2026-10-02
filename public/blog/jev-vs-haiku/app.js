@@ -335,13 +335,42 @@ const BAR = 16;  // px for the evaluation bar plus its gap
 const GLYPH = (ch) => SOLID[ch.toLowerCase()] + "\uFE0E";
 const TERM = { insufficient_material: "too few pieces left to mate", checkmate: "checkmate", threefold_repetition: "threefold repetition", time: "out of time", ply_cap: "move limit" };
 const cap = (s) => s[0].toUpperCase() + s.slice(1);
+// The recorded games replayed under 30 s + 1 s byo-yomi: same moves and answer times, another clock.
+// The models were never told the time, so their play does not depend on it.
+const BYO_MAIN = 30000, BYO_PERIOD = 1000;
+function byoFlag(g) {  // {i: ply on which a side runs out of time (-1 if none), bank: main time it had left}
+  if (g._byo) return g._byo;
+  const bank = { jev: BYO_MAIN, haiku: BYO_MAIN };
+  g._byo = { i: -1, bank: 0 };
+  for (let i = 0; i < g.plies.length; i++) {
+    const w = g.plies[i][0], t = g.plies[i][4];
+    if (t <= bank[w]) bank[w] -= t;
+    else if (t <= bank[w] + BYO_PERIOD) bank[w] = 0;
+    else { g._byo = { i, bank: bank[w] }; break; }
+  }
+  return g._byo;
+}
+function chessResult(g, clk) {
+  const f = clk === "byo" ? byoFlag(g) : { i: -1 };
+  if (f.i < 0) return { winner: g.winner, why: TERM[g.termination] || g.termination, plies: g.plies.length, out: null };
+  const out = g.plies[f.i][0];
+  return { winner: out === "jev" ? "haiku" : "jev", why: `${cap(out)} ran out of time`, plies: f.i, out };
+}
 const ChessGame = {
-  unit: "game", units: "20 games", defaults: {}, options: [], overlay: "Engine evaluation",
-  items() {
-    return D.chess.games.map((g, i) => ({ key: i, label: `Game ${i + 1} of 20`,
-      sub: `${cap(g.white)} white, ${cap(g.black)} black · ${g.winner === "draw" ? "draw" : cap(g.winner) + " won"} (${TERM[g.termination] || g.termination})` }));
+  unit: "game", units: "20 games", defaults: { clock: "played" }, overlay: "Engine evaluation",
+  options: [{ key: "clock", label: "Clock", choices: [
+    { v: "played", t: "As played (10 s + 1 s per move)", help: "Each side starts with 10 s and gains 1 s after every move. Both models answered in under 1 s on average, so neither ran short of time." },
+    { v: "byo", t: "30 s, then 1 s per move (byo-yomi)", help: "The same recorded moves under a stricter clock: 30 s each in total, then every move must come within 1 s or the game is lost on time. The models were never told the time, so their moves would not change." }] }],
+  items(sel) {
+    return D.chess.games.map((g, i) => { const r = chessResult(g, sel.clock);
+      return { key: i, label: `Game ${i + 1} of 20`,
+        sub: `${cap(g.white)} white, ${cap(g.black)} black · ${r.winner === "draw" ? "draw" : cap(r.winner) + " won"} (${r.why})` }; });
   },
-  len(sel, k) { const p = D.chess.games[k].plies.at(-1); return p[3] + p[4] + 2500; },
+  len(sel, k) {
+    const g = D.chess.games[k], f = sel.clock === "byo" ? byoFlag(g) : { i: -1 };
+    if (f.i >= 0) return g.plies[f.i][3] + f.bank + BYO_PERIOD + 2500;
+    const p = g.plies.at(-1); return p[3] + p[4] + 2500;
+  },
   mount(stage) {
     stage.innerHTML = "";
     const wrap = el("div", "chess");
@@ -361,9 +390,11 @@ const ChessGame = {
     return { ctx, black, white, card, logs: [{ box: log, details: det, count, rows: [], k: null }] };
   },
   fillLogs(v, sel, k) {
-    const g = D.chess.games[k], rows = [{ t: 0, n: g.opening.length, html: `<span class="k">opening</span>  ${g.opening.join(" ")}  (random, from the game's seed)` }];
+    const g = D.chess.games[k], f = sel.clock === "byo" ? byoFlag(g) : { i: -1 }, rows = [{ t: 0, n: g.opening.length, html: `<span class="k">opening</span>  ${g.opening.join(" ")}  (random, from the game's seed)` }];
     g.plies.forEach((p, i) => {
       const n = g.opening.length + i + 1, side = p[0] === g.white ? "white" : "black";
+      if (f.i >= 0 && i > f.i) return;
+      if (i === f.i) { rows.push({ t: p[3] + f.bank + BYO_PERIOD, n, html: `<span class="k">ply ${n} ${cap(p[0])} (${side})</span>  out of time: its answer took ${sec(p[4])}, with ${sec(f.bank + BYO_PERIOD)} left` }); return; }
       const sf = p[8] == null ? "" : `  Stockfish: lost ${p[8]} cp${p[1] === p[9] ? " (best move)" : `, best ${p[9]}`}`;
       const ans = p[0] === "jev"
         ? `${p[1]}  confidence ${p2(p[7])}  top: ${(p[14] || []).map(([m, x]) => `${m} ${p2(x)}`).join(" · ")}`
@@ -371,17 +402,30 @@ const ChessGame = {
       rows.push({ t: p[3] + p[4], n, html: `<span class="k">ply ${n} ${cap(p[0])} (${side})</span>  ${sec(p[4])}  ${ans}${p[12] ? "  INVALID: random legal move played" : ""}${sf}` });
     });
     setRows(v.logs[0], rows);
-    v.logs[0].total = g.opening.length + g.plies.length;
+    v.logs[0].total = g.opening.length + (f.i >= 0 ? f.i + 1 : g.plies.length);
   },
   draw(v, sel, k, local, R) {
     const g = D.chess.games[k], c = v.ctx, sq = 52;
-    const clock = { white: g.base * 1000, black: g.base * 1000 };
-    let fen = g.start, last = -1, thinking = -1;
+    const byo = sel.clock === "byo", f = byo ? byoFlag(g) : { i: -1 };
+    const start = byo ? BYO_MAIN : g.base * 1000, clock = { white: start, black: start };
+    const bank = { jev: BYO_MAIN, haiku: BYO_MAIN }, period = { white: false, black: false };
+    let fen = g.start, last = -1, thinking = -1, timedOut = null;
     for (let i = 0; i < g.plies.length; i++) {
-      const p = g.plies[i], side = p[0] === g.white ? "white" : "black";
+      const p = g.plies[i], side = p[0] === g.white ? "white" : "black", who = p[0], el = local - p[3];
       if (local < p[3]) break;
-      if (local < p[3] + p[4]) { thinking = i; clock[side] = p[5] - (local - p[3]); break; }
-      clock[side] = p[6] + g.inc * 1000; fen = p[11]; last = i;
+      if (byo) {
+        if (i === f.i && el >= bank[who] + BYO_PERIOD) { clock[side] = 0; period[side] = true; timedOut = who; break; }
+        if (local < p[3] + p[4]) {
+          thinking = i; period[side] = el >= bank[who];
+          clock[side] = period[side] ? BYO_PERIOD - (el - bank[who]) : bank[who] - el; break;
+        }
+        bank[who] = Math.max(0, bank[who] - p[4]); period[side] = bank[who] === 0;
+        clock[side] = period[side] ? BYO_PERIOD : bank[who];
+      } else {
+        if (local < p[3] + p[4]) { thinking = i; clock[side] = p[5] - (local - p[3]); break; }
+        clock[side] = p[6] + g.inc * 1000;
+      }
+      fen = p[11]; last = i;
     }
     const lp = last >= 0 ? g.plies[last] : null, hl = lp ? [lp[2].slice(0, 2), lp[2].slice(2, 4)] : [];
     const rows = fen.split("/");
@@ -429,21 +473,23 @@ const ChessGame = {
     for (const side of ["black", "white"]) {
       const box = v[side], name = g[side], low = clock[side] < 3000;
       box.className = `clock ${name}` + (thinking >= 0 && g.plies[thinking][0] === name ? " thinking" : "") + (low ? " low" : "");
-      box.innerHTML = `<span class="who"><span class="key ${name}"></span>${cap(name)} <span class="side">${side}${thinking >= 0 && g.plies[thinking][0] === name ? ", thinking" : ""}</span></span><span class="t">${clockTxt(clock[side])}</span>`;
+      box.innerHTML = `<span class="who"><span class="key ${name}"></span>${cap(name)} <span class="side">${side}${period[side] ? ", 1 s per move" : ""}${thinking >= 0 && g.plies[thinking][0] === name ? ", thinking" : ""}</span></span><span class="t">${clockTxt(clock[side])}</span>`;
     }
-    const over = local >= g.plies.at(-1)[3] + g.plies.at(-1)[4];
-    if (over) v.card.innerHTML = `<span class="san">${g.winner === "draw" ? "Draw" : cap(g.winner) + " won"}</span><span>${cap(TERM[g.termination] || g.termination)}, ${g.plies.length + g.opening.length} plies</span>`;
+    const res = chessResult(g, sel.clock), over = timedOut || (f.i < 0 && local >= g.plies.at(-1)[3] + g.plies.at(-1)[4]);
+    if (over) v.card.innerHTML = `<span class="san">${res.winner === "draw" ? "Draw" : cap(res.winner) + " won"}</span><span>${cap(res.why)}, ${res.plies + g.opening.length} plies</span>`;
     else if (lp) v.card.innerHTML = `<span class="lbl">Last move</span><span class="san">${esc(lp[1])}</span><span>${cap(lp[0])}: ${esc(lp[13] || "")}</span><span>confidence ${p2(lp[7])} · ${sec(lp[4])}</span>` +
       (R.overlay && lp[8] != null ? `<span>Stockfish: lost ${lp[8]} cp${lp[1] === lp[9] ? ", the best move" : `, best was ${esc(lp[9])}`}</span>` : "") +
       (R.overlay && lp[10] != null ? `<span>Position: ${Math.abs(lp[10]) < 25 ? "about level" : `${lp[10] > 0 ? "White" : "Black"} ahead by ${(Math.abs(lp[10]) / 100).toFixed(1)} pawns`}</span>` : "");
     else v.card.innerHTML = `<span class="san">Opening</span><span>${g.opening.join(" ")} (random, from the game's seed)</span>`;
   },
   summary() {
-    const s = D.chess.summary;
-    const row = (n) => `<tr><td><span class="nw"><span class="key ${n}"></span>${cap(n)}</span></td><td class="num">${s[n].won} / ${s[n].drawn} / ${s[n].lost}</td><td class="num">${s[n].acpl}</td><td class="num">${pc(s[n].best_rate)}</td><td class="num">${(s[n].latency_p50_ms / 1000).toFixed(2)} s</td></tr>`;
-    return `<table><thead><tr><th scope="col">Player</th><th class="num">Won / drawn / lost</th><th class="num">Avg loss (cp)</th><th class="num">Engine's best move</th><th class="num">Time per move</th></tr></thead><tbody>${row("jev")}${row("haiku")}</tbody></table>`;
+    const s = D.chess.summary, wdl = (n) => {  // won / drawn / lost under the byo-yomi replay
+      const r = D.chess.games.filter((g) => [g.white, g.black].includes(n)).map((g) => chessResult(g, "byo").winner);
+      return `${r.filter((w) => w === n).length} / ${r.filter((w) => w === "draw").length} / ${r.filter((w) => w !== n && w !== "draw").length}`; };
+    const row = (n) => `<tr><td><span class="nw"><span class="key ${n}"></span>${cap(n)}</span></td><td class="num">${s[n].won} / ${s[n].drawn} / ${s[n].lost}</td><td class="num">${wdl(n)}</td><td class="num">${s[n].acpl}</td><td class="num">${pc(s[n].best_rate)}</td><td class="num">${(s[n].latency_p50_ms / 1000).toFixed(2)} s</td></tr>`;
+    return `<table><thead><tr><th scope="col">Player</th><th class="num">As played (W / D / L)</th><th class="num">Byo-yomi (W / D / L)</th><th class="num">Avg loss (cp)</th><th class="num">Best move</th><th class="num">Time per move</th></tr></thead><tbody>${row("jev")}${row("haiku")}</tbody></table>`;
   },
-  note: "The bar left of the board is Stockfish's evaluation: the more white it shows, the better White stands. Clocks run only while that side's model is answering. The log counts plies (single moves), opening included. cp = centipawns: 100 is one pawn of value lost against Stockfish's best move.",
+  note: "The bar left of the board is Stockfish's evaluation: the more white it shows, the better White stands. Clocks run only while that side's model is answering. The log counts plies (single moves), opening included. W / D / L = won / drawn / lost. cp = centipawns: 100 is one pawn of value lost against Stockfish's best move; best move is how often a model played it.",
 };
 
 /* ---------- Minesweeper ---------- */

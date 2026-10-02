@@ -55,7 +55,7 @@ js: ["/blog/jev-vs-haiku/data/chess.js", "/blog/jev-vs-haiku/data/codenames.js",
 </section>
 <section class="game prose" id="chess" aria-labelledby="h-chess">
 <h2 id="h-chess">Chess</h2>
-<p>Twenty lightning games, Jev against Haiku directly, 10 seconds each plus 1 second per move. Stockfish graded every move afterwards. Both played the same quality of chess, weak and even (on average about 1.3 pawns of value lost per move), and most games ended with too few pieces to mate. Jev moved 3.6 times faster for a twenty-seventh of the cost.</p>
+<p>Twenty lightning games, Jev against Haiku directly, 10 seconds each plus 1 second added after every move. Stockfish graded every move afterwards. Both played the same quality of chess, weak and even (on average about 1.3 pawns of value lost per move), and most games ended with too few pieces to mate. Jev moved 3.6 times faster for a twenty-seventh of the cost. Switch the clock to 30 seconds, then 1 second per move (byo-yomi, as in Go), and replay the same moves: Haiku runs out of time in 9 games and Jev in 1, after a single 30-second stall of the API.</p>
 <figure class="replay" data-game="chess" aria-label="Chess replay"></figure>
 </section>
 <section class="game prose" id="minesweeper" aria-labelledby="h-minesweeper">
