@@ -57,7 +57,7 @@ The top and bottom rows are storage pods, the middle left and right nodes are pi
 | 15 | 59.0 | 9.8 | 35.0 | 20.6 |
 | 20 | 59.0 | 9.8 | 35.0 | 20.6 |
 
-On-time completions rose by 1.45 jobs per unseen episode from the first to final checkpoint. The writer kept the checkpoint 15 controller at checkpoint 20, so those two rows are identical by design. This is a modest change compared with docking. The separate late-or-unfinished and duration columns keep throughput from hiding delayed jobs. Safety rejections are attempts blocked by the fixed traffic layer, so a lower number is preferable when service is otherwise comparable.
+On-time completions rose by 1.45 jobs per unseen episode from the first to final checkpoint. The writer kept the checkpoint 15 controller at checkpoint 20, so those two rows are identical by design. This is a modest change compared with docking: most of the gain came from the closure-and-slowdown cases, while the other three settings changed little. The separate late-or-unfinished and duration columns keep throughput from hiding delayed jobs. Safety rejections are attempts blocked by the fixed traffic layer, so a lower number is preferable when service is otherwise comparable.
 
 | Challenge | On-time at 0 | On-time at 20 | Late/unfinished at 0 | Late/unfinished at 20 |
 | :-- | ---: | ---: | ---: | ---: |
