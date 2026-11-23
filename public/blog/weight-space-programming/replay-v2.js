@@ -133,4 +133,10 @@
     scrub.addEventListener('input',()=>{pause();index=cursor=Number(scrub.value);render();});
     checkpoint.addEventListener('change',select);scenario.addEventListener('change',select);view?.addEventListener('change',render);follow?.addEventListener('change',render);select();
   }
+  for(const table of document.querySelectorAll('.prose table')){
+    const wrapper=document.createElement('div');
+    wrapper.className='wsp-table-scroll';
+    table.parentNode.insertBefore(wrapper,table);
+    wrapper.append(table);
+  }
 })();

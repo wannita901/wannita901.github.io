@@ -33,3 +33,8 @@
 .wsp-replay button:hover,.wsp-replay select:hover{border-color:var(--accent)}
 .wsp-legend{padding:0 16px 14px;color:var(--fg-2);font-size:12px}
 .wsp-replay canvas{min-height:210px}
+
+.wsp-table-scroll{width:100%;min-width:0;overflow-x:auto;overscroll-behavior-inline:contain}
+.wsp-table-scroll table{min-width:620px;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.wsp-table-scroll th,.wsp-table-scroll td{padding:.35rem .7rem;border-bottom:1px solid var(--rule)}
+.wsp-table-scroll th{color:var(--fg);font-size:.85em;line-height:1.35}
