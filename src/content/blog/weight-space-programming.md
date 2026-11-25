@@ -12,6 +12,8 @@ js: ["/blog/weight-space-programming/timeline-data.js", "/blog/weight-space-prog
 
 Can an LLM write useful neural-network weights without training? Inspired by [weight-space programming](https://rikiyat.github.io/blog/weight-space-programming/), I asked GPT-6 Astra to write two tiny controllers and revise them from simulator feedback.
 
+**Docking reached 200/200 unseen successes by call 7. Warehouse improved by just 1.4 on-time jobs per episode.** The useful change in docking was learning to get around a panel. In the warehouse, most of the improvement came when an aisle closed and a robot slowed down.
+
 - **Two networks:** 3,623 parameters (14.5 kB) for docking; 1,633 parameters (6.5 kB) for warehouse, counting float32 weights and biases.
 - **One attempt per task:** no training, web, or code tools for the writer. Each evaluation call tested 20 complete practice episodes.
 - **Unseen test:** 200 episodes per checkpoint, balanced across four challenge families. These scores were measured afterward and never shown to the writer.
@@ -21,7 +23,7 @@ Can an LLM write useful neural-network weights without training? Inspired by [we
 
 <figure class="wsp-timeline" data-wsp-timeline aria-label="Weight edits and practice scores by evaluation call"><p>The timeline requires JavaScript.</p></figure>
 
-Docking reached **200/200 unseen successes by call 7**, after the controller learned to bypass the panel. Warehouse completed **1.4 more jobs on time per episode**, with most of the improvement in the closure and slowdown cases.
+The edits changed what the docking controller could do: it progressed from holding safely to completing the approach. In the warehouse, they mostly adjusted how an already working controller handled disrupted traffic. In both tasks, the unseen tests followed the broad pattern seen in practice.
 
 ## Spacecraft docking
 
@@ -57,4 +59,4 @@ The tests cover balanced traffic, a station burst, a bottleneck, and an aisle cl
 | On-time jobs / episode | 57.6 | 58.3 | 59.0 |
 | Late or unfinished / episode | 11.3 | 10.5 | 9.8 |
 
-**The improvement was concentrated in disrupted traffic:** on-time jobs rose from 55.8 to 60.5 in the closure and slowdown cases. The other three families changed by only 0.2–0.5 jobs per episode.
+**The improvement was concentrated in disrupted traffic:** on-time jobs rose from 55.8 to 60.5 in the closure and slowdown cases. The other three families changed by only 0.2–0.4 jobs per episode.
