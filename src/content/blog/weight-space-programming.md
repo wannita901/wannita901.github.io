@@ -1,71 +1,71 @@
 ---
-title: "Can an LLM write the weights for a controller?"
-date: 2026-11-24
-description: "One untrained weight-writing attempt for a spacecraft docking controller and a warehouse traffic controller, with recorded replays and unseen tests."
+title: "Writing a neural network without training it"
+date: 2026-11-25
+description: "GPT-6 Astra wrote two tiny controllers directly as weights. Watch their recorded docking and warehouse decisions."
 tags: [llm, evaluation]
 draft: true
 wide: true
 css: ["/blog/weight-space-programming/replay.css"]
-js: ["/blog/weight-space-programming/replay-data-v2.js", "/blog/weight-space-programming/replay-v2.js"]
+js: ["/blog/weight-space-programming/replay-v2.js"]
 ---
 
-Can a language model write the numbers inside a neural network, without training it? Inspired by [weight-space programming](https://rikiyat.github.io/blog/weight-space-programming/), I gave GPT-6 Astra two small controllers to write from scratch: one for a spacecraft approaching a moving dock, and one for six warehouse robots carrying storage pods to pick stations. The model could not browse the web or run code while writing the weights. There was no gradient-based training in these writer attempts.
+Can an LLM write a neural network's weights directly? Inspired by [weight-space programming](https://rikiyat.github.io/blog/weight-space-programming/), I asked GPT-6 Astra to build two small controllers: one to dock with a moving spacecraft, and one to route warehouse robots. The writer had no web or code tools and never trained the networks. It could only write weights, run the fixed evaluator, and revise them from the feedback.
 
-Choose a spacecraft challenge and checkpoint below to watch the recorded chaser path around a moving dock, panel, or debris.
+- **Two networks:** 3,623 parameters for docking; 1,633 for warehouse traffic.
+- **One writer attempt per task:** 20 evaluation calls, each testing 20 complete practice episodes. Checkpoints 0, 5, 10, 15 and 20 mark cumulative progress.
+- **Unseen test:** 200 new episodes per checkpoint, 50 in each challenge family. The writer did not see these results before its choices were fixed.
 
-<figure class="wsp-replay" data-wsp-replay="docking" aria-label="Recorded spacecraft docking replay"><p>The replay requires JavaScript.</p></figure>
+## At a glance
 
-The docking controller has **3,623 parameters** (72 inputs, two 32-unit hidden layers, seven outputs). The warehouse controller has **1,633 parameters** (16 inputs, two 32-unit hidden layers, one score output). These networks are deliberately small; the interesting question is whether the writer can use feedback to alter their behavior.
+- **Docking:** 0 / 200 docks with the first weights → **200 / 200** after 20 calls. It learned to approach the port and clear the panel and debris.
+- **Warehouse:** 57.6 → **59.0 on-time jobs** per unseen episode. Most gain came from the closure and slowdown cases.
 
-## How the experiment worked
+**The striking result is docking:** by call 10, the selected controller docked in every unseen case. Warehouse improved only modestly, and at call 20 the writer kept its call 15 controller. These are two recorded writer trajectories, not an estimate of how often a fresh attempt would work.
 
-I ran **one independent writing attempt per task**. The first weights, called checkpoint 0, were submitted before the writer saw any episode results. The writer then had 20 evaluation calls. Each call ran 20 complete practice episodes: five cases from each of four challenge types. The writer saw practice feedback, selected controllers at cumulative calls 5, 10, 15 and 20, and could keep revising. A checkpoint is the controller the writer selected at that point, not a separate training run.
+## Spacecraft docking
 
-After selection was locked, each checkpoint faced **200 unseen episodes**, with 50 new seeds per challenge type. Those test results were withheld from the writer. Each task has 400 practice episode runs across the calls and 200 unseen scores per checkpoint. Docking has 1,000 distinct held-out episode records. Warehouse has 800: checkpoint 20 reused the checkpoint 15 controller, so its 200 scores reuse the same records. A replay below is one recorded *practice* episode, selected so the challenge seed is matched across checkpoints; the tables report the separate unseen tests. The full episode and decision records, including checksums, are retained in the private experiment run.
+The chaser starts about 25 metres from a rotating ghost ship. The goal is to touch its moving collar slowly and aligned, without hitting the hull, an attached panel, or drifting debris. A safe hold avoids a crash but does not count as docking. Its 72 → 32 → 32 → 7 network commands three thrust axes, three rotation axes, and a hold or abort signal every step.
 
-**Warehouse continuation note.** After call 14, repeatedly sending the full writer history exceeded the client input limit. For the remaining turns, earlier writer actions and overall and key scenario metrics stayed in the prompt, while the latest interaction kept its full episode feedback. Older detailed traces remained saved and could be requested again. This prompt compaction changed the writer context; the simulator, seeds, 20-call budget, and checkpoint rules did not change.
+The four **challenge families** each have 50 unseen variants:
 
-## A moving spacecraft dock
+1. **Moving collar:** the target drifts and tumbles.
+2. **Panel bypass:** an attached panel blocks the direct path.
+3. **Crossing debris:** three moving objects cross the approach.
+4. **Combined salvage:** collar, panel and debris together.
 
-The chaser flies in three dimensions toward a tumbling ghost ship. Its docking collar moves with the target. Some cases add an attached panel that blocks a direct approach; others add drifting debris, or both. The controller chooses translation thrust, rotation torque and an abort/hold decision. A dock counts only when the ship contacts the moving port at acceptable speed and alignment. A safe hold avoids collision but is **not** a successful dock.
+The drawing shows recorded positions in plan, elevation, or port view. Switch views to see motion hidden by a flat projection. The command bars below show what the controller actually sent at each moment. Play runs the unseen episodes back to back; the episode and checkpoint controls let you jump anywhere.
 
-The replay above compares the same starting condition across checkpoints. Plan and elevation views show the chaser's path around obstacles; the port view shows lateral and vertical alignment. The drawing is a projection of recorded simulation coordinates. It is not a physical orbital rendering.
+<figure class="wsp-replay" data-wsp-replay="docking" aria-label="Spacecraft docking test replays"><p>The replay requires JavaScript.</p></figure>
 
-| Checkpoint | Successful docks | Mean fuel used (sim. units) | Mean duration (s) |
-| ---: | ---: | ---: | ---: |
-| 0 | 0 / 200 | 0.155 | 20.5 |
-| 5 | 100 / 200 | 0.232 | 33.5 |
-| 10 | 200 / 200 | 0.387 | 76.9 |
-| 15 | 200 / 200 | 0.442 | 64.5 |
-| 20 | 200 / 200 | 0.415 | 57.0 |
+| Calls spent | 0 | 5 | 10 | 15 | 20 |
+| :-- | --: | --: | --: | --: | --: |
+| Successful docks / 200 | 0 | 100 | 200 | 200 | 200 |
+| Mean fuel used | 0.155 | 0.232 | 0.387 | 0.442 | 0.415 |
 
-The first controller safely held or aborted in all 200 unseen cases, so its dock count was zero. By call 5 it docked in 100 cases, succeeding in every moving-collar and debris-only case but none of the panel cases. By call 10 it docked in all 200, including the combined panel-and-debris cases. The later checkpoints kept that success rate. Fuel and duration are averages over successful and unsuccessful episodes, so they should be read alongside dock count.
+Checkpoint 0 held safely in all 200 cases. At call 5 it docked in the moving-collar and debris-only families, but never cleared the panel. At call 10 it docked in all four. Fuel averages include failed episodes.
 
-## A warehouse with pod trips
+## Warehouse traffic
 
-Six robots share a nine-junction, single-width aisle network. A dispatcher assigns each released job; the learned controller scores candidate moves at each junction. To complete a job, a robot goes to a storage pod, carries it to one of two pick stations, waits for service, and returns it to storage before its deadline. Four test settings vary arrival load, station demand, aisle bottlenecks, and a temporary closure with a slowed robot. A fixed safety layer rejects conflicting moves; a safety rejection is recorded rather than silently counting it as a successful move.
+Six robots share a three-by-three grid of single-width aisles. The network scores each possible move; a fixed safety layer blocks conflicting moves.
 
-<figure class="wsp-replay" data-wsp-replay="warehouse" aria-label="Recorded warehouse pod delivery replay"><p>The replay requires JavaScript.</p></figure>
+1. A dispatcher gives a robot a job and a deadline.
+2. The robot collects a pod from a blue **P** location.
+3. It brings the pod to an amber **PICK** station for service.
+4. It returns the pod to storage. Only then is the job complete.
 
-The top and bottom rows are storage pods, the middle left and right nodes are pick stations, and the center is robot parking. Pick a robot to follow its trip. Its color and caption distinguish waiting, travel and station service. Red dashed aisle means a closed link. The replay displays actual recorded robot positions and events, one tick at a time.
+The four challenge families are balanced flow, a pick-station burst, a narrow bottleneck, and a temporary link closure with one slowed robot. In the replay, numbered circles are robots; mint means travelling, amber means station service, and grey means idle. A red dashed aisle is closed. Select a robot to follow its current pod and destination.
 
-| Checkpoint | On-time jobs / episode | Late or unfinished / episode | Mean episode p95 job duration (ticks) | Safety rejections / episode |
-| ---: | ---: | ---: | ---: | ---: |
-| 0 | 57.6 | 11.3 | 41.0 | 22.3 |
-| 5 | 58.3 | 10.5 | 35.9 | 22.8 |
-| 10 | 59.0 | 9.8 | 35.0 | 20.5 |
-| 15 | 59.0 | 9.8 | 35.0 | 20.6 |
-| 20 | 59.0 | 9.8 | 35.0 | 20.6 |
+<figure class="wsp-replay" data-wsp-replay="warehouse" aria-label="Warehouse traffic test replays"><p>The replay requires JavaScript.</p></figure>
 
-On-time completions rose by 1.45 jobs per unseen episode from the first to final checkpoint. The writer kept the checkpoint 15 controller at checkpoint 20, so those two rows are identical by design. This is a modest change compared with docking: most of the gain came from the closure-and-slowdown cases, while the other three settings changed little. The separate late-or-unfinished and duration columns keep throughput from hiding delayed jobs. Safety rejections are attempts blocked by the fixed traffic layer, so a lower number is preferable when service is otherwise comparable.
+| Calls spent | 0 | 5 | 10 | 15 | 20 |
+| :-- | --: | --: | --: | --: | --: |
+| On-time jobs / episode | 57.6 | 58.3 | 59.0 | 59.0 | 59.0 |
+| Late or unfinished / episode | 11.3 | 10.5 | 9.8 | 9.8 | 9.8 |
 
-| Challenge | On-time at 0 | On-time at 20 | Late/unfinished at 0 | Late/unfinished at 20 |
-| :-- | ---: | ---: | ---: | ---: |
-| Balanced flow | 59.0 | 59.5 | 8.4 | 7.9 |
-| Station burst | 53.1 | 53.5 | 6.3 | 6.0 |
-| Narrow bottleneck | 62.4 | 62.6 | 11.2 | 11.0 |
-| Closure + slowdown | 55.8 | 60.5 | 19.1 | 14.4 |
+The gain was concentrated in the closure and slowdown cases: on-time jobs rose from 55.8 to 60.5 per episode. The other three families changed by 0.2–0.5 jobs. The writer reused checkpoint 15 at checkpoint 20, so those test results are identical.
 
-## What this does and does not show
+## What these results mean
 
-The docking run shows that a language model can use episode feedback to write a small controller that succeeds on all 200 held-out cases in this particular simulator. The warehouse run shows how much its selected policy changed under a more crowded, task-based workflow. Neither result establishes reliability in real spacecraft or warehouses. With one writer attempt per task, this is a documented trajectory, not an estimate of how often a fresh writer would succeed. The 200 held-out cases test these fixed simulators and seed distributions; they do not cover arbitrary conditions.
+An LLM wrote a small docking controller that succeeded on all 200 held-out cases in this simulator, without optimizing weights by training. It made a much smaller difference to warehouse traffic. The tests cover fixed simulators and seed distributions, not real spacecraft or warehouses. With one writer attempt per task, they show what happened in these runs, not how reliably another run would repeat them.
+
+Every practice and unseen episode, decision, and checksum was saved. Docking has 1,000 distinct unseen episode records across five checkpoints. Warehouse has 800 because checkpoints 15 and 20 use the same controller. After warehouse call 14, the repeated prompt exceeded the client input limit; later prompts kept previous actions and aggregate scores plus the latest full feedback. The original records and evaluation rules were preserved.

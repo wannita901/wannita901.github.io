@@ -1,6 +1,4 @@
 (() => {
-  const data = window.weightSpaceReplaysV2;
-  if (!data) return;
   const scenarios = {
     docking: {moving_collar:'Moving collar', panel_bypass:'Panel bypass', debris_crossing:'Crossing debris', combined_salvage:'Combined salvage'},
     warehouse: {balanced:'Balanced flow', pick_station_burst:'Station burst', narrow_bottleneck:'Narrow bottleneck', temporary_closure_slowdown:'Closure + slowdown'}
@@ -43,7 +41,9 @@
       txt(ctx,'Cross-section: sideways / vertical',24,29,16);
       return;
     }
-    // The ghost ship is a measured keep-out shape in this projection.
+    // The dashed approach corridor makes the blocked direct route visible.
+    stroke(ctx,[port,xy([f[3][0]+side*12,f[3][1],f[3][2]])],'#68899d',2,[7,7]);
+    txt(ctx,'Direct approach',port[0]-95,port[1]+35,11,colors.muted);
     circle(ctx,...target,29,'#243c50','#648296');
     stroke(ctx,[xy([f[2][0]-side*2.6,f[2][1],f[2][2]]),xy([f[2][0]+side*2.6,f[2][1],f[2][2]])],colors.amber,2);
     circle(ctx,...port,9,'#273b4e',colors.amber);
@@ -60,6 +60,7 @@
     txt(ctx,'Chaser',ship[0]+16,ship[1]-14,12,colors.mint);
     txt(ctx,view==='elevation'?'Elevation: approach / vertical':'Plan: approach / sideways',24,29,16);
     txt(ctx,['Staging','Bypass','Crossing','Port approach'][f[6]],24,394,14);
+    txt(ctx,`Range ${Math.hypot(...f[1].map((v,n)=>v-f[3][n])).toFixed(1)} m`,320,394,14);
     txt(ctx,`Fuel ${f[7].toFixed(2)} / 6`,584,394,14);
   }
   function robot(ctx,x,y,id,phase,focus){
@@ -99,39 +100,71 @@
       const j=atNode[r.node]||0;if(!r.transit){x+=(j%3-1)*25;y+=Math.floor(j/3)*25;atNode[r.node]=j+1;}
       robot(ctx,x,y,r.id,r.phase,r.id===focus);
     });
-    const selected=robots[focus], phase={idle:'Waiting for job',to_pod:'Going to pod',to_station:'Taking pod to pick station',service:'At pick station',to_storage:'Returning pod'}[selected.phase]||selected.phase;
+    const selected=robots[focus];
+    const goal=selected.phase==='to_station'||selected.phase==='service'?stationNode[selected.station]:(selected.pod===null?null:podNode[selected.pod]);
+    if(goal!==null){circle(ctx,...nodes[goal],26,'transparent',colors.amber);txt(ctx,'GOAL',nodes[goal][0]+31,nodes[goal][1]-18,11,colors.amber)}
+    const phase={idle:'Waiting for job',to_pod:'Going to pod',to_station:'Taking pod to pick station',service:'At pick station',to_storage:'Returning pod'}[selected.phase]||selected.phase;
     txt(ctx,`Robot ${focus+1}: ${phase}`,24,29,16);
     if(selected.job!==null)txt(ctx,`Pod P${selected.pod+1}  →  Pick ${selected.station+1}`,24,392,14);
     const event=events.find(e=>e.robot===focus&&['pickup','station_arrival','return_complete','safety_reject'].includes(e.type));
     if(event)txt(ctx,event.type.replaceAll('_',' '),456,392,14,colors.amber);
     txt(ctx,`Tick ${tick}`,630,29,14,colors.muted,'right');
   }
+  const cache=new Map();
+  async function episode(task, checkpoint, number){
+    const chunk=Math.floor((number-1)/25), fileCheckpoint=task==='warehouse'&&checkpoint==='20'?'15':checkpoint, key=`${task}-${fileCheckpoint}-${chunk}`;
+    if(!cache.has(key)){
+      const response=await fetch(`/blog/weight-space-programming/data/${key}.json`);
+      if(!response.ok)throw new Error(`Replay file could not load (${response.status})`);
+      cache.set(key,await response.json());
+    }
+    return cache.get(key)[(number-1)%25];
+  }
   for(const figure of document.querySelectorAll('[data-wsp-replay]')){
-    const task=figure.dataset.wspReplay,records=data[task];if(!records)continue;
-    figure.innerHTML=`<div class="wsp-controls"><label>Checkpoint <select class="wsp-checkpoint"></select></label><label>Challenge <select class="wsp-scenario"></select></label>${task==='docking'?'<label>View <select class="wsp-view"><option value="plan">Plan</option><option value="elevation">Elevation</option><option value="port">Port alignment</option></select></label>':'<label>Follow <select class="wsp-robot"></select></label>'}</div><canvas width="720" height="420" role="img"></canvas><div class="wsp-transport"><button type="button">Play</button><input type="range" min="0" value="0" aria-label="Replay position"><output></output><label>Speed <select class="wsp-speed"><option value=".5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label></div><figcaption class="wsp-caption"></figcaption><div class="wsp-legend"></div>`;
-    const q=s=>figure.querySelector(s), canvas=q('canvas'),ctx=canvas.getContext('2d'),checkpoint=q('.wsp-checkpoint'),scenario=q('.wsp-scenario'),view=q('.wsp-view'),follow=q('.wsp-robot'),play=q('button'),scrub=q('input'),output=q('output'),caption=q('figcaption'),speed=q('.wsp-speed');
+    const task=figure.dataset.wspReplay;
+    figure.innerHTML=`<div class="wsp-controls"><label>Checkpoint <select class="wsp-checkpoint"></select></label><label>Challenge <select class="wsp-scenario"></select></label>${task==='docking'?'<label>View <select class="wsp-view"><option value="elevation">Elevation</option><option value="plan">Plan</option><option value="port">Port alignment</option></select></label>':'<label>Follow <select class="wsp-robot"></select></label>'}</div><canvas width="720" height="420" role="img"></canvas><div class="wsp-transport"><button class="wsp-prev" type="button" aria-label="Previous episode">←</button><label>Episode <input class="wsp-episode" type="number" min="1" max="200" value="1" aria-label="Episode number"> / 200</label><button class="wsp-next" type="button" aria-label="Next episode">→</button><button class="wsp-play" type="button">Play all</button><input class="wsp-scrub" type="range" min="0" value="0" aria-label="Replay position"><output></output><label>Speed <select class="wsp-speed"><option value=".5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label></div><figcaption class="wsp-caption" aria-live="polite"></figcaption>${task==='docking'?'<div class="wsp-command"><strong>Controller output</strong><div class="wsp-command-grid"></div></div>':''}<div class="wsp-legend"></div>`;
+    const q=s=>figure.querySelector(s), canvas=q('canvas'),ctx=canvas.getContext('2d'),checkpoint=q('.wsp-checkpoint'),scenario=q('.wsp-scenario'),view=q('.wsp-view'),follow=q('.wsp-robot'),play=q('.wsp-play'),prev=q('.wsp-prev'),next=q('.wsp-next'),episodeInput=q('.wsp-episode'),scrub=q('.wsp-scrub'),output=q('output'),caption=q('figcaption'),speed=q('.wsp-speed');
     [0,5,10,15,20].forEach(n=>checkpoint.add(new Option(n===0?'0 · First weights':`${n} calls`,n)));
-    Object.entries(scenarios[task]).forEach(([id,name])=>scenario.add(new Option(name,id)));
+    Object.entries(scenarios[task]).forEach(([id,name],i)=>scenario.add(new Option(`${name} · ${i*50+1}–${(i+1)*50}`,i*50)));
     if(follow)for(let n=0;n<6;n++)follow.add(new Option(`Robot ${n+1}`,n));
     checkpoint.value='20';
-    if(view)view.value='elevation';
-    scenario.value=task==='docking'?'combined_salvage':'temporary_closure_slowdown';
-    q('.wsp-legend').textContent=task==='docking'?'Mint: chaser and path · Amber: moving dock · Red: panel and debris':'P: storage pod · PICK: pick station · Numbered circles: robots · Red dashed track: closed link';
-    let frames,index=0,cursor=0,previous=null,animation=null;
+    q('.wsp-legend').innerHTML=task==='docking'?'<span><i class="wsp-key mint"></i>Chaser and path</span><span><i class="wsp-key amber"></i>Moving collar</span><span><i class="wsp-key red"></i>Panel / moving debris</span>':'<span><i class="wsp-key blue"></i>P1–P6: storage pods</span><span><i class="wsp-key amber"></i>PICK: service stations</span><span><i class="wsp-key mint"></i>Numbered robots</span><span><i class="wsp-key red"></i>Closed aisle</span>';
+    play.disabled=true;
+    const commandNames=['Thrust X','Thrust Y','Thrust Z','Rotate X','Rotate Y','Rotate Z','Hold / abort'];
+    if(task==='docking')q('.wsp-command-grid').innerHTML=commandNames.map((name,i)=>`<div class="wsp-command-row"><span>${name}</span><div class="wsp-bar"><i data-command="${i}"></i></div><output data-value="${i}">0.00</output></div>`).join('');
+    let frames=[],current=null,index=0,cursor=0,number=1,previous=null,animation=null,playing=false,loadToken=0;
     function render(){
+      if(!frames.length)return;
       const f=frames[index];ctx.fillStyle='#102131';ctx.fillRect(0,0,720,420);
-      if(task==='docking')docking(ctx,frames,index,view.value);else warehouse(ctx,f,Number(follow.value));
+      if(task==='docking'){
+        docking(ctx,frames,index,view.value);
+        const values=f[8]||[];
+        values.forEach((value,i)=>{const bar=q(`[data-command="${i}"]`),val=q(`[data-value="${i}"]`);if(bar){bar.style.width=`${Math.min(100,Math.abs(value)*100)}%`;bar.style.background=value<0?'#83b7f6':'#78dfcf';}if(val)val.textContent=value.toFixed(2)});
+      }else warehouse(ctx,f,Number(follow.value));
       scrub.value=index;output.textContent=task==='docking'?`${f[0].toFixed(1)} / ${frames.at(-1)[0].toFixed(1)} s`:`Tick ${f[0]} / ${frames.at(-1)[0]}`;
       scrub.setAttribute('aria-valuetext',output.textContent);
-      canvas.setAttribute('aria-label',`${scenarios[task][scenario.value]}, checkpoint ${checkpoint.value}, ${output.textContent}. ${caption.textContent}`);
+      canvas.setAttribute('aria-label',`Episode ${number} of 200, ${scenarios[task][current.scenario]}, checkpoint ${checkpoint.value}, ${output.textContent}. ${caption.textContent}`);
     }
-    function pause(){if(animation!==null)cancelAnimationFrame(animation);animation=null;play.textContent='Play';}
-    function select(){pause();const r=records[checkpoint.value].cases[scenario.value];frames=r.frames;index=cursor=task==='warehouse'?Math.min(50,frames.length-1):0;scrub.max=frames.length-1;
-      const m=r.metrics;caption.textContent=task==='docking'?`Recorded practice episode · ${m.success?'Docked':m.termination.replaceAll('_',' ')} · ${m.fuel_used.toFixed(3)} fuel used`:`Recorded practice episode · ${m.jobs_completed_on_time}/${m.jobs_released} jobs completed on time · ${m.safety_rejections} safety rejections`;render();}
-    function step(time){if(previous!==null)cursor+=Math.min(time-previous,100)*.06*Number(speed.value);previous=time;const next=Math.min(Math.floor(cursor),frames.length-1);if(next!==index){index=next;render();}if(index===frames.length-1)pause();else animation=requestAnimationFrame(step);}
-    play.addEventListener('click',()=>{if(animation!==null)return pause();if(index===frames.length-1){index=cursor=0;render();}previous=null;play.textContent='Pause';animation=requestAnimationFrame(step);});
-    scrub.addEventListener('input',()=>{pause();index=cursor=Number(scrub.value);render();});
-    checkpoint.addEventListener('change',select);scenario.addEventListener('change',select);view?.addEventListener('change',render);follow?.addEventListener('change',render);select();
+    function pause(){playing=false;if(animation!==null)cancelAnimationFrame(animation);animation=null;play.textContent='Play all';}
+    async function go(n,autoplay=false){
+      const token=++loadToken;number=Math.max(1,Math.min(200,n));episodeInput.value=number;prev.disabled=number===1;next.disabled=number===200;
+      scenario.value=Math.floor((number-1)/50)*50;play.disabled=true;caption.textContent=`Loading test episode ${number}…`;
+      try{const item=await episode(task,checkpoint.value,number);if(token!==loadToken)return;
+        current=item;frames=item.frames;play.disabled=false;cursor=index=0;scrub.max=frames.length-1;
+        const m=item.metrics;
+        caption.textContent=task==='docking'?`${scenarios[task][item.scenario]} · ${m.success?'Docked':m.termination.replaceAll('_',' ')} · ${m.fuel_used.toFixed(3)} fuel used`:`${scenarios[task][item.scenario]} · ${m.jobs_completed_on_time}/${m.jobs_released} jobs on time · ${m.safety_rejections} safety rejections`;
+        render();if(autoplay&&playing){previous=null;animation=requestAnimationFrame(step)}
+      }catch(error){if(token===loadToken){pause();caption.textContent=`${error.message}. Select an episode to retry.`}}
+    }
+    function step(time){if(!playing)return;if(previous!==null)cursor+=Math.min(time-previous,100)*.06*Number(speed.value);previous=time;const nextFrame=Math.min(Math.floor(cursor),frames.length-1);if(nextFrame!==index){index=nextFrame;render()}
+      if(index===frames.length-1){animation=null;if(number<200)go(number+1,true);else pause()}else animation=requestAnimationFrame(step)}
+    play.addEventListener('click',()=>{if(playing)return pause();playing=true;play.textContent='Pause';if(number===200&&index===frames.length-1)go(1,true);else{previous=null;animation=requestAnimationFrame(step)}});
+    prev.addEventListener('click',()=>{pause();go(number-1)});next.addEventListener('click',()=>{pause();go(number+1)});
+    episodeInput.addEventListener('change',()=>{pause();go(Number(episodeInput.value)||1)});
+    checkpoint.addEventListener('change',()=>{pause();go(number)});
+    scenario.addEventListener('change',()=>{pause();go(Number(scenario.value)+1)});
+    scrub.addEventListener('input',()=>{pause();cursor=index=Number(scrub.value);render()});
+    view?.addEventListener('change',render);follow?.addEventListener('change',render);go(151);
   }
   for(const table of document.querySelectorAll('.prose table')){
     const wrapper=document.createElement('div');
