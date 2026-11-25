@@ -166,3 +166,9 @@
  .wsp-mode{flex:1 1 100%;flex-direction:row;align-items:center;gap:12px}
  .wsp-table-scroll th,.wsp-table-scroll td{padding:.4rem .25rem;font-size:.85em}
 }
+
+.post-subtitle{display:block;margin-top:.4em;font-size:.6em;line-height:1.35;font-weight:400;color:var(--fg-2);letter-spacing:normal}
+.wsp-outcome{display:flex;align-items:center;flex-wrap:wrap;gap:6px 14px;padding:10px 16px;border-bottom:1px solid var(--rule);font-size:12px;background:var(--sheet);color:var(--fg-2)}
+.wsp-result{font:600 11px var(--mono);letter-spacing:.025em;padding:4px 7px;border-radius:4px}
+.wsp-result.success{background:#dbf1e9;color:#185749}
+.wsp-result.failure{background:#f6e4de;color:#853c2b}
