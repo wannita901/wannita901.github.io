@@ -108,3 +108,15 @@
 .wsp-mode output{font:bold 16px var(--mono);color:#1f7770}
 .wsp-mode small{font-size:10px;color:var(--fg-2)}
 @media(max-width:560px){.wsp-speed{margin-left:0}.wsp-transport .wsp-scrub{order:2;flex-basis:45%}.wsp-transport>output{order:3}.wsp-speed{order:4;width:100%}.wsp-stick{min-width:0;flex:1 1 200px}}
+
+.wsp-tl-metrics{display:flex;align-items:baseline;flex-wrap:wrap;gap:3px 16px}
+.wsp-tl-metrics strong{margin-right:auto}
+.wsp-tl-metrics span{font:11px var(--mono);color:var(--fg-2);white-space:nowrap}
+.wsp-tl-metrics b{color:var(--fg);font-weight:600}
+.wsp-tl-brief{margin-top:9px}
+.wsp-tl-brief small{display:block;text-transform:uppercase;letter-spacing:.08em;font:10px var(--mono);color:var(--fg-2)}
+.wsp-tl-brief p{margin:3px 0 8px;color:var(--fg);font-weight:500}
+.wsp-tl-record{border-top:1px solid var(--rule);padding-top:6px;font-size:12px}
+.wsp-tl-record summary{cursor:pointer;color:var(--accent)}
+.wsp-tl-record p{margin:7px 0 3px;line-height:1.5;color:var(--fg-2)}
+.wsp-tl-provenance{display:block;margin-top:7px;font-size:10px}

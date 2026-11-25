@@ -24,7 +24,7 @@ Can an LLM write a neural network's weights directly? Inspired by [weight-space 
 
 ## When the weights changed
 
-The chart follows each **practice evaluation call**. Red marks show weight edits; hover or select a point to read the writer's short explanation submitted with that weight edit. It is part of the recorded model output, not a transcript of private reasoning. The grey line adds retrospective 200-case unseen scores at every saved call; these were computed only after the writer had finished and were never feedback for its edits. The separate checkpoint results are reported below.
+The writer edited the weights after every call shown. Hover or select a point to see a short description of the edit and expand the **model's submitted note**. That note is part of the recorded output, not private reasoning. The grey line shows 200-case unseen scores computed afterward; the writer never saw them. Each mint point is a 20-episode practice score.
 
 <figure class="wsp-timeline" data-wsp-timeline aria-label="Weight edits and practice scores by evaluation call"><p>The timeline requires JavaScript.</p></figure>
 
