@@ -53,5 +53,16 @@
 .wsp-command strong{display:block;font-size:13px;margin-bottom:7px;color:var(--fg)}
 .wsp-command-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 18px}
 .wsp-command-row{display:grid;grid-template-columns:68px minmax(25px,1fr) 35px;align-items:center;gap:6px;font:11px var(--mono);font-variant-numeric:tabular-nums}
-.wsp-command-row output{text-align:right}.wsp-bar{height:6px;border-radius:4px;background:var(--rule);overflow:hidden}.wsp-bar i{display:block;height:100%;width:0;background:#36a899;transition:width .08s linear}
+.wsp-command-row output{text-align:right}.wsp-bar{height:6px;border-radius:4px;background:var(--rule);overflow:hidden}.wsp-bar i{display:block;height:100%;width:0;background:#36a899}
 @media(max-width:560px){.wsp-command-grid{grid-template-columns:1fr}.wsp-controls,.wsp-transport{gap:8px 10px}.wsp-transport output{min-width:85px}}
+.wsp-timeline{margin:1rem 0;border:1px solid var(--rule);border-radius:8px;overflow:hidden;font:14px/1.5 var(--sans);color:var(--fg)}
+.wsp-timeline-controls{display:flex;align-items:center;flex-wrap:wrap;gap:10px 18px;padding:12px 16px;border-bottom:1px solid var(--rule);background:var(--sheet)}
+.wsp-timeline-controls label{display:flex;align-items:center;gap:7px}
+.wsp-timeline select,.wsp-timeline button{border:1px solid var(--rule);background:var(--sheet);color:var(--fg);font:inherit;border-radius:5px;padding:5px 8px}
+.wsp-timeline button{cursor:pointer}.wsp-timeline button:hover,.wsp-timeline select:hover{border-color:var(--accent)}
+.wsp-timeline button:focus-visible,.wsp-timeline select:focus-visible,.wsp-timeline svg [role=button]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wsp-timeline svg{display:block;width:100%;height:auto;min-height:185px;background:#f8fbfa}
+.wsp-timeline svg text{font:12px var(--mono);fill:#59706e}.wsp-timeline svg [role=button]{cursor:pointer}
+.wsp-tl-note{padding:12px 16px;background:var(--sheet);border-top:1px solid var(--rule)}
+.wsp-tl-note strong{display:block;color:var(--fg)}.wsp-tl-note p{margin:5px 0;color:var(--fg-2)}.wsp-tl-note small{color:var(--fg-2)}
+.wsp-tl-legend{padding:0 16px 12px;background:var(--sheet);font:11px var(--mono);color:var(--fg-2)}
