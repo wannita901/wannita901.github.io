@@ -283,7 +283,7 @@
       }catch(error){if(token===loadToken){pause();q('.wsp-outcome').hidden=true;caption.textContent=`${error.message}. Select an episode to retry.`}}
     }
     function step(time){if(!playing)return;if(previous!==null)cursor+=Math.min(time-previous,100)*.06*rate;previous=time;const nextFrame=Math.min(Math.floor(cursor),frames.length-1);if(nextFrame!==index){index=nextFrame;render()}
-      if(index===frames.length-1){if(finishedAt===null)finishedAt=time;if(time-finishedAt>=1600){animation=null;if(number<200)go(number+1,true);else pause();return;}}animation=requestAnimationFrame(step)}
+      if(index===frames.length-1){if(finishedAt===null)finishedAt=time;if(time-finishedAt>=500){animation=null;if(number<200)go(number+1,true);else pause();return;}}animation=requestAnimationFrame(step)}
     play.addEventListener('click',()=>{if(playing)return pause();playing=true;play.innerHTML=PAUSE_ICON;play.setAttribute('aria-label','Pause replay');if(number===200&&index===frames.length-1)go(1,true);else{previous=null;animation=requestAnimationFrame(step)}});
     speed.querySelectorAll('[data-speed]').forEach(button=>button.addEventListener('click',()=>{rate=Number(button.dataset.speed);speed.querySelectorAll('[data-speed]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)))}));
     prev.addEventListener('click',()=>{pause();go(number-1)});next.addEventListener('click',()=>{pause();go(number+1)});
