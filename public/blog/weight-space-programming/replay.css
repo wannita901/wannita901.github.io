@@ -123,3 +123,46 @@
 
 .wsp-timeline svg{cursor:crosshair;touch-action:pan-y}
 .wsp-timeline svg [role=button]{cursor:crosshair}
+
+/* Editorial replay layout: scene first, one playback row, quiet supporting controls. */
+.wsp-method{margin:1.4rem 0 2rem;padding:.75rem 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-size:.9em}
+.wsp-method summary{cursor:pointer;color:var(--accent);font-weight:600}
+.wsp-method ul{margin-bottom:.5rem}
+.wsp-replay{border-radius:12px;margin:1.5rem 0 2rem}
+.wsp-replay canvas{min-height:0;aspect-ratio:12 / 7}
+.wsp-controls{gap:10px 18px;padding:14px 16px;font-size:12px}
+.wsp-controls label{color:var(--fg-2)}
+.wsp-controls select{max-width:240px;color:var(--fg)}
+.wsp-episode-nav{display:flex;align-items:center;gap:6px;margin-left:auto}
+.wsp-episode-nav button{min-width:28px;width:28px;height:28px;padding:0;display:grid;place-items:center;border:0;background:transparent}
+.wsp-episode-nav .wsp-episode{width:3.5em;min-width:0;flex:none;padding:3px;border:1px solid var(--rule);border-radius:4px;text-align:center;background:var(--sheet);color:var(--fg);font:inherit}
+.wsp-transport{padding:12px 16px;gap:12px}
+.wsp-transport .wsp-scrub{flex:1 1 100px}
+.wsp-caption{padding:10px 16px;font-size:12px;line-height:1.6}
+.wsp-command{padding:14px 16px}
+.wsp-command-grid{gap:24px;align-items:center;justify-content:space-between}
+.wsp-stick{border:0;padding:0;min-width:190px;gap:5px 8px;grid-template-columns:78px 72px}
+.wsp-stick-field{width:64px;height:64px;box-shadow:none}
+.wsp-stick-field i{box-shadow:none;width:9px;height:9px;border:0}
+.wsp-mode{border:0;padding:0;min-width:90px}
+.wsp-command strong{margin-bottom:14px}
+.wsp-legend{font-size:11px;padding:12px 16px;gap:8px 18px}
+.wsp-key.debris{clip-path:polygon(20% 0,75% 5%,100% 40%,80% 85%,40% 100%,0 65%,5% 25%);border-radius:0}
+.wsp-key.panel{background:#243e52;border:1px solid #cf655e}
+.wsp-table-scroll table{min-width:0;width:100%}
+@media(max-width:560px){
+ .wsp-controls{align-items:stretch;gap:10px;padding:12px}
+ .wsp-controls label{flex:1 1 140px;justify-content:space-between}
+ .wsp-controls select{max-width:195px;min-width:0}
+ .wsp-episode-nav{margin-left:0;justify-content:flex-start;flex:1 1 100%}
+ .wsp-transport{padding:10px 12px;gap:10px}
+ .wsp-transport .wsp-scrub{order:0;min-width:65px;flex-basis:65px}
+ .wsp-transport>output{order:0;min-width:0;font-size:10px}
+ .wsp-speed{width:100%;justify-content:flex-end}
+ .wsp-command-grid{gap:15px;justify-content:flex-start}
+ .wsp-stick{min-width:0;flex:1 1 120px;grid-template-columns:1fr 64px}
+ .wsp-stick small{font-size:9px}
+ .wsp-stick small output{font-size:10px}
+ .wsp-mode{flex:1 1 100%;flex-direction:row;align-items:center;gap:12px}
+ .wsp-table-scroll th,.wsp-table-scroll td{padding:.4rem .25rem;font-size:.85em}
+}
