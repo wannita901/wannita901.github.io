@@ -168,7 +168,15 @@
 }
 
 .post-subtitle{display:block;margin-top:.4em;font-size:.6em;line-height:1.35;font-weight:400;color:var(--fg-2);letter-spacing:normal}
-.wsp-outcome{display:flex;align-items:center;flex-wrap:wrap;gap:6px 14px;padding:10px 16px;border-bottom:1px solid var(--rule);font-size:12px;background:var(--sheet);color:var(--fg-2)}
+
+.wsp-stage{position:relative}
+.wsp-outcome{position:absolute;top:14px;left:50%;transform:translateX(-50%);pointer-events:none;white-space:nowrap}
+.wsp-outcome[hidden]{display:none}
+.wsp-caption{display:flex;align-items:baseline;justify-content:space-between;gap:8px 20px;flex-wrap:wrap}
+.wsp-caption-detail{margin-left:auto;text-align:right}
+.wsp-timeline select,.wsp-replay select{appearance:none;padding-right:30px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='m3 4.5 3 3 3-3' fill='none' stroke='%23788c91' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+@media(max-width:560px){.wsp-outcome{top:8px}.wsp-result{font-size:10px}}
+
 .wsp-result{font:600 11px var(--mono);letter-spacing:.025em;padding:4px 7px;border-radius:4px}
 .wsp-result.success{background:#dbf1e9;color:#185749}
 .wsp-result.failure{background:#f6e4de;color:#853c2b}

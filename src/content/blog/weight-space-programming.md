@@ -1,6 +1,6 @@
 ---
 title: "Writing motion into weights"
-subtitle: "A weight-space programming experiment"
+subtitle: "Weight-space programming for docking and warehouse control"
 date: 2026-11-25
 description: "GPT-6 Astra wrote two tiny controllers directly as weights. Watch their recorded docking and warehouse decisions."
 tags: [llm, evaluation]
@@ -14,16 +14,12 @@ Can an LLM write useful neural-network weights without training? Inspired by [we
 
 **Docking reached 200/200 unseen successes by call 7. Warehouse improved by just 1.4 on-time jobs per episode.** The useful change in docking was learning to get around a panel. In the warehouse, most of the improvement came when an aisle closed and a robot slowed down.
 
-<details class="wsp-method"><summary>The experiment in brief</summary>
-
 - **Two networks:** 3,623 parameters (14.5 kB) for docking; 1,633 parameters (6.5 kB) for warehouse, counting float32 weights and biases.
 - **One attempt per task:** no training, web, or code tools for the writer. Each evaluation call tested 20 complete practice episodes.
 - **Unseen test:** 200 episodes per checkpoint, balanced across four challenge families. These scores were measured afterward and never shown to the writer.
 - This page follows the first ten calls of longer recorded runs. Results apply to these simulators and this one attempt per task.
 
-</details>
-
-## Performance across evaluation calls
+## At a glance
 
 Move across the chart to follow the edits. Mint shows practice performance; grey shows the unseen tests. Each call includes the model's submitted edit note.
 

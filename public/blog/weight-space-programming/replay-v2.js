@@ -237,7 +237,7 @@
   }
   for(const figure of document.querySelectorAll('[data-wsp-replay]')){
     const task=figure.dataset.wspReplay;
-    figure.innerHTML=`<div class="wsp-controls"><label>Checkpoint <select class="wsp-checkpoint"></select></label><label>Challenge <select class="wsp-scenario"></select></label></div><div class="wsp-outcome" role="status"></div><canvas width="720" height="420" role="img"></canvas><div class="wsp-transport"><button class="wsp-play" type="button" aria-label="Play all episodes" title="Play all episodes">${PLAY_ICON}</button><button class="wsp-prev" type="button" aria-label="Previous episode">${PREV_ICON}</button><label class="wsp-episode-label">Episode <input class="wsp-episode" type="number" min="1" max="200" value="1" aria-label="Episode number"> / 200</label><button class="wsp-next" type="button" aria-label="Next episode">${NEXT_ICON}</button><input class="wsp-scrub" type="range" min="0" value="0" aria-label="Replay position"><output></output><div class="wsp-speed" role="group" aria-label="Replay speed">${(task==='docking'?[.5,1,2,4,8]:[.1,.25,.5,1,2]).map(n=>`<button type="button" data-speed="${n}" aria-pressed="${n===1}">${n}×</button>`).join('')}</div></div><figcaption class="wsp-caption" aria-live="polite"></figcaption>${task==='docking'?'<div class="wsp-command"><strong>Controller commands <small>−1 to +1</small></strong><div class="wsp-command-grid"><div class="wsp-stick"><b>Translation</b><div class="wsp-stick-field"><span class="wsp-stick-axis horizontal"></span><span class="wsp-stick-axis vertical"></span><i data-stick="move"></i></div><small>X <output data-value="0">0.00</output> · Y <output data-value="1">0.00</output> · Z <output data-value="2">0.00</output></small></div><div class="wsp-stick"><b>Rotation</b><div class="wsp-stick-field"><span class="wsp-stick-axis horizontal"></span><span class="wsp-stick-axis vertical"></span><i data-stick="turn"></i></div><small>X <output data-value="3">0.00</output> · Y <output data-value="4">0.00</output> · Z <output data-value="5">0.00</output></small></div><div class="wsp-mode">Mode <output data-value="6">FLY</output><small>Requested mode</small></div></div></div>':''}<div class="wsp-legend"></div>`;
+    figure.innerHTML=`<div class="wsp-controls"><label>Checkpoint <select class="wsp-checkpoint"></select></label><label>Challenge <select class="wsp-scenario"></select></label></div><div class="wsp-stage"><canvas width="720" height="420" role="img"></canvas><div class="wsp-outcome" role="status" hidden></div></div><div class="wsp-transport"><button class="wsp-play" type="button" aria-label="Play all episodes" title="Play all episodes">${PLAY_ICON}</button><button class="wsp-prev" type="button" aria-label="Previous episode">${PREV_ICON}</button><label class="wsp-episode-label">Episode <input class="wsp-episode" type="number" min="1" max="200" value="1" aria-label="Episode number"> / 200</label><button class="wsp-next" type="button" aria-label="Next episode">${NEXT_ICON}</button><input class="wsp-scrub" type="range" min="0" value="0" aria-label="Replay position"><output></output><div class="wsp-speed" role="group" aria-label="Replay speed">${(task==='docking'?[.5,1,2,4,8]:[.1,.25,.5,1,2]).map(n=>`<button type="button" data-speed="${n}" aria-pressed="${n===1}">${n}×</button>`).join('')}</div></div><figcaption class="wsp-caption"></figcaption>${task==='docking'?'<div class="wsp-command"><strong>Controller commands <small>−1 to +1</small></strong><div class="wsp-command-grid"><div class="wsp-stick"><b>Translation</b><div class="wsp-stick-field"><span class="wsp-stick-axis horizontal"></span><span class="wsp-stick-axis vertical"></span><i data-stick="move"></i></div><small>X <output data-value="0">0.00</output> · Y <output data-value="1">0.00</output> · Z <output data-value="2">0.00</output></small></div><div class="wsp-stick"><b>Rotation</b><div class="wsp-stick-field"><span class="wsp-stick-axis horizontal"></span><span class="wsp-stick-axis vertical"></span><i data-stick="turn"></i></div><small>X <output data-value="3">0.00</output> · Y <output data-value="4">0.00</output> · Z <output data-value="5">0.00</output></small></div><div class="wsp-mode">Mode <output data-value="6">FLY</output><small>Requested mode</small></div></div></div>':''}<div class="wsp-legend"></div>`;
     const q=s=>figure.querySelector(s), canvas=q('canvas'),ctx=canvas.getContext('2d'),checkpoint=q('.wsp-checkpoint'),scenario=q('.wsp-scenario'),play=q('.wsp-play'),prev=q('.wsp-prev'),next=q('.wsp-next'),episodeInput=q('.wsp-episode'),scrub=q('.wsp-scrub'),output=q('output'),caption=q('figcaption'),speed=q('.wsp-speed');
     const episodeNav=document.createElement('div');episodeNav.className='wsp-episode-nav';episodeNav.append(prev,q('.wsp-episode-label'),next);q('.wsp-controls').append(episodeNav);
     [0,5,10].forEach(n=>checkpoint.add(new Option(n===0?'0 · First weights':`${n} calls`,n)));
@@ -246,7 +246,7 @@
     q('.wsp-legend').innerHTML=task==='docking'?'<span><i class="wsp-key craft"></i>Chaser + recorded trail</span><span><i class="wsp-key ship"></i>Ghost ship + hull boundary</span><span><i class="wsp-key collar"></i>Docking collar</span><span><i class="wsp-key panel"></i>Attached panel</span><span><i class="wsp-key debris"></i>Moving debris</span>':'<span><i class="wsp-key robot"></i>Numbered robot</span><span><i class="wsp-key pod"></i>Storage pod · collect → return</span><span><i class="wsp-key station"></i>Pick station · service</span><span><i class="wsp-key closure"></i>Closed aisle</span>';
     play.disabled=true;
         const camera={yaw:-.55,elev:.35};
-    let frames=[],current=null,index=0,cursor=0,number=1,previous=null,animation=null,playing=false,loadToken=0,rate=1;
+    let frames=[],current=null,index=0,cursor=0,number=1,previous=null,animation=null,playing=false,loadToken=0,rate=1,finishedAt=null;
     function render(){
       if(!frames.length)return;
       const f=frames[index];ctx.fillStyle='#102131';ctx.fillRect(0,0,720,420);
@@ -255,34 +255,35 @@
         const values=f[8]||[];
         values.forEach((value,i)=>{const val=q(`[data-value="${i}"]`);if(val)val.textContent=i===6?(value>=.5?'HOLD':value<=-.5?'ABORT':'FLY'):value.toFixed(2)});for(const [name,a,b] of [['move',0,1],['turn',3,4]]){const dot=q(`[data-stick="${name}"]`);dot.style.left=`${50+Math.max(-1,Math.min(1,values[a]||0))*42}%`;dot.style.top=`${50-Math.max(-1,Math.min(1,values[b]||0))*42}%`;}
       }else warehouse(ctx,f,-1);
+      const completed=index===frames.length-1,m=current.metrics;
+      q('.wsp-outcome').hidden=!completed;
+      const detail=q('.wsp-caption-detail'),metric=q('.wsp-caption-metric');
+      if(metric){
+        metric.textContent=task==='docking'?`${(completed?m.fuel_used:Math.max(0,frames[0][7]-f[7])).toFixed(3)} fuel used${completed&&m.min_debris_clearance!==null?` · closest debris gap ${m.min_debris_clearance.toFixed(2)} m`:''}`:(completed?`${m.safety_rejections} conflicting moves blocked`:'Collect → pick station → return');
+        detail.textContent=(completed?(task==='docking'?`${m.success?'Docked':m.termination.replaceAll('_',' ')} · `:`${m.jobs_late_or_unfinished} late or unfinished · `):'')+`Episode ${number}`;
+      }
       scrub.value=index;output.textContent=task==='docking'?`${f[0].toFixed(1)} / ${frames.at(-1)[0].toFixed(1)} s`:`Tick ${f[0]} / ${frames.at(-1)[0]}`;
       scrub.setAttribute('aria-valuetext',output.textContent);
       canvas.setAttribute('aria-label',`Episode ${number} of 200, ${scenarios[task][current.scenario]}, checkpoint ${checkpoint.value}, ${output.textContent}. ${caption.textContent}`);
     }
-    function pause(){playing=false;if(animation!==null)cancelAnimationFrame(animation);animation=null;play.innerHTML=PLAY_ICON;play.setAttribute('aria-label','Play all episodes');}
+    function pause(){playing=false;finishedAt=null;if(animation!==null)cancelAnimationFrame(animation);animation=null;play.innerHTML=PLAY_ICON;play.setAttribute('aria-label','Play all episodes');}
     async function go(n,autoplay=false){
       const token=++loadToken;number=Math.max(1,Math.min(200,n));episodeInput.value=number;prev.disabled=number===1;next.disabled=number===200;
-      scenario.value=Math.floor((number-1)/50)*50;play.disabled=true;q('.wsp-outcome').textContent='Loading recorded result…';caption.textContent=`Loading test episode ${number}…`;
+      scenario.value=Math.floor((number-1)/50)*50;play.disabled=true;q('.wsp-outcome').hidden=true;finishedAt=null;caption.textContent=`Loading test episode ${number}…`;
       try{const item=await episode(task,checkpoint.value,number);if(token!==loadToken)return;
         current=item;frames=item.frames;play.disabled=false;cursor=index=0;scrub.max=frames.length-1;
         const m=item.metrics;
-        const outcome=q('.wsp-outcome'),resultLabel=document.createElement('span');resultLabel.textContent='Final result';
-        if(task==='docking'){
-          const status=document.createElement('strong');status.className=`wsp-result ${m.success?'success':'failure'}`;status.textContent=m.success?'SUCCESS':'UNSUCCESSFUL';
-          const description=document.createElement('span');description.textContent=`${m.success?'Docked':m.termination.replaceAll('_',' ')} · Episode ${number}`;
-          outcome.replaceChildren(resultLabel,status,description);
-          caption.textContent=`${m.fuel_used.toFixed(3)} fuel used${m.min_debris_clearance===null?'':` · closest debris gap ${m.min_debris_clearance.toFixed(2)} m`}`;
-        }else{
-          const ontime=document.createElement('strong');ontime.className='wsp-result success';ontime.textContent=`${m.jobs_completed_on_time} / ${m.jobs_released} ON TIME`;
-          const missed=document.createElement('span');missed.textContent=`${m.jobs_late_or_unfinished} late or unfinished · Episode ${number}`;
-          outcome.replaceChildren(resultLabel,ontime,missed);
-          caption.textContent=`${m.safety_rejections} conflicting moves blocked by the safety layer`;
-        }
+        const outcome=q('.wsp-outcome'),status=document.createElement('strong');
+        status.className=`wsp-result ${task==='docking'&&!m.success?'failure':'success'}`;
+        status.textContent=task==='docking'?(m.success?'SUCCESS':'UNSUCCESSFUL'):`${m.jobs_completed_on_time} / ${m.jobs_released} ON TIME`;
+        outcome.replaceChildren(status);
+        const metric=document.createElement('span'),detail=document.createElement('span');
+        metric.className='wsp-caption-metric';detail.className='wsp-caption-detail';caption.replaceChildren(metric,detail);
         render();if(autoplay&&playing){previous=null;animation=requestAnimationFrame(step)}
-      }catch(error){if(token===loadToken){pause();q('.wsp-outcome').textContent='Result unavailable';caption.textContent=`${error.message}. Select an episode to retry.`}}
+      }catch(error){if(token===loadToken){pause();q('.wsp-outcome').hidden=true;caption.textContent=`${error.message}. Select an episode to retry.`}}
     }
     function step(time){if(!playing)return;if(previous!==null)cursor+=Math.min(time-previous,100)*.06*rate;previous=time;const nextFrame=Math.min(Math.floor(cursor),frames.length-1);if(nextFrame!==index){index=nextFrame;render()}
-      if(index===frames.length-1){animation=null;if(number<200)go(number+1,true);else pause()}else animation=requestAnimationFrame(step)}
+      if(index===frames.length-1){if(finishedAt===null)finishedAt=time;if(time-finishedAt>=1600){animation=null;if(number<200)go(number+1,true);else pause();return;}}animation=requestAnimationFrame(step)}
     play.addEventListener('click',()=>{if(playing)return pause();playing=true;play.innerHTML=PAUSE_ICON;play.setAttribute('aria-label','Pause replay');if(number===200&&index===frames.length-1)go(1,true);else{previous=null;animation=requestAnimationFrame(step)}});
     speed.querySelectorAll('[data-speed]').forEach(button=>button.addEventListener('click',()=>{rate=Number(button.dataset.speed);speed.querySelectorAll('[data-speed]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)))}));
     prev.addEventListener('click',()=>{pause();go(number-1)});next.addEventListener('click',()=>{pause();go(number+1)});
