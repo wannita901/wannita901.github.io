@@ -1,5 +1,6 @@
 ---
-title: "Controlling motion with weight-space programming"
+title: "Writing motion into weights"
+subtitle: "Weight-space programming for motion control"
 date: 2026-11-25
 description: "GPT-6 Astra wrote two tiny controllers directly as weights. Watch their recorded docking and warehouse decisions."
 tags: [llm, evaluation]
