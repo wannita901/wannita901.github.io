@@ -39,19 +39,31 @@
       const scale=16/(1+Math.max(-30,depth)/100);
       return [520+horizontal*scale,207-vertical*scale,scale];
     };
-    // A measured triad uses projected 3 m displacements at the target's depth.
-    const scaleOrigin=[640,62];
-    for(const [axis,label] of [[[side*3,0,0],'X'],[[0,3,0],'Y'],[[0,0,3],'Z']]){
-      const p=project(center.map((v,n)=>v+axis[n]));
-      const o=project(center),dx=p[0]-o[0],dy=p[1]-o[1];
-      const end=[scaleOrigin[0]+dx*.58,scaleOrigin[1]+dy*.58];
-      stroke(ctx,[scaleOrigin,end],'#83a5b9',1.5);
-      circle(ctx,end[0],end[1],2.5,'#83a5b9');
-      txt(ctx,label,end[0]+(label==='X'?-16:5),end[1]+(label==='Y'?12:-5),10,'#aac5d4');
+    // Target-relative 3D lattice: three perpendicular planes, five metres per cell.
+    const gridPoint=(x,y,z)=>project([center[0]+side*x,center[1]+y,center[2]+z]);
+    const gridLine=(a,b,alpha=.45)=>{ctx.globalAlpha=alpha;stroke(ctx,[gridPoint(...a),gridPoint(...b)],'#5a8399',1);};
+    ctx.save();
+    for(let x=0;x<=35;x+=5){
+      gridLine([x,-10,-10],[x,10,-10]); // floor: X/Y
+      gridLine([x,10,-10],[x,10,10]); // rear: X/Z
     }
-    circle(ctx,...scaleOrigin,2.5,'#aac5d4');
-    txt(ctx,'3 m / axis',600,27,10,'#aac5d4');
+    for(let y=-10;y<=10;y+=5){
+      gridLine([0,y,-10],[35,y,-10]); // floor depth
+      gridLine([0,y,-10],[0,y,10],.32); // end: Y/Z
+    }
+    for(let z=-10;z<=10;z+=5){
+      gridLine([0,10,z],[35,10,z]); // rear height
+      gridLine([0,-10,z],[0,10,z],.32); // end: Y/Z
+    }
+    for(const [a,b] of [
+      [[0,-10,-10],[35,-10,-10]],[[0,10,-10],[35,10,-10]],
+      [[0,10,10],[35,10,10]],[[0,-10,-10],[0,10,-10]],
+      [[0,10,-10],[0,10,10]]
+    ])gridLine(a,b,.8);
+    ctx.restore();
+    for(let x=0;x<=30;x+=10){const p=gridPoint(x,-10,-10);txt(ctx,`${x} m`,p[0],p[1]+13,10,'#89a9b9','center');}
     txt(ctx,'3D local frame · drag to rotate',22,29,16);
+    txt(ctx,'5 m grid · X approach · Y lateral · Z height',700,29,11,'#aac5d4','right');
     const target=project(center),port=project(f[3]);
     const corridor=project([f[3][0]+side*12,f[3][1],f[3][2]]);
     stroke(ctx,[port,corridor],'#678498',2,[6,7]);
@@ -144,20 +156,57 @@
   if(timeline&&window.weightSpaceTimeline){
     timeline.innerHTML='<div class="wsp-timeline-controls"><label>Task <select class="wsp-tl-task"><option value="docking">Space docking</option><option value="warehouse">Warehouse</option></select></label></div><svg viewBox="0 0 720 270" role="img" aria-label="Practice score by evaluation call"></svg><div class="wsp-tl-note"></div><div class="wsp-tl-legend">Mint: practice score (20 cases per call) · Grey: retrospective unseen score (200 cases) · Red: edit call</div>';
     const task=timeline.querySelector('.wsp-tl-task'),svg=timeline.querySelector('svg'),note=timeline.querySelector('.wsp-tl-note');
-    let selected=1;
-    function draw(){
-      const rows=window.weightSpaceTimeline[task.value].slice(0,10);selected=Math.min(selected,rows.length);
-      const min=task.value==='docking'?0:50,max=task.value==='docking'?100:65;
-      const X=n=>62+(n-1)*620/(rows.length-1),Y=v=>220-(v-min)*155/(max-min);
-      const line=rows.map(r=>`${X(r.call)},${Y(r.score)}`).join(' ');
-      const held=rows.filter(r=>r.heldout!==undefined),heldLine=held.map(r=>`${X(r.call)},${Y(r.heldout)}`).join(' ');
-      svg.innerHTML=`<line x1="62" y1="220" x2="682" y2="220" stroke="#b9c6c9"/><line x1="62" y1="65" x2="682" y2="65" stroke="#d4dddf" stroke-dasharray="4 5"/><text x="12" y="72">${max}${task.value==='docking'?'%':''}</text><text x="12" y="225">${min}${task.value==='docking'?'%':''}</text><polyline points="${line}" fill="none" stroke="#168d7d" stroke-width="3" stroke-linejoin="round"/><polyline points="${heldLine}" fill="none" stroke="#84949b" stroke-width="2" stroke-dasharray="5 4"/>${held.map(r=>`<circle cx="${X(r.call)}" cy="${Y(r.heldout)}" r="3" fill="#84949b"/>`).join('')}${rows.map(r=>`<g data-call="${r.call}" tabindex="0" role="button" aria-label="Call ${r.call}, practice score ${r.score}"><line x1="${X(r.call)}" y1="238" x2="${X(r.call)}" y2="252" stroke="${r.weights_changed?'#d15452':'#aab9c0'}" stroke-width="2"/><circle cx="${X(r.call)}" cy="${Y(r.score)}" r="${r.call===selected?7:5}" fill="${r.call===selected?'#102131':'#168d7d'}" stroke="${r.call===selected?'#168d7d':'none'}" stroke-width="2"/><text x="${X(r.call)}" y="267" text-anchor="middle">${r.call}</text></g>`).join('')}<line x1="${X(selected)}" y1="47" x2="${X(selected)}" y2="220" stroke="#607783" stroke-dasharray="3 5"/><text x="${X(selected)+8}" y="${Math.max(52,Y(rows[selected-1].score)-12)}" fill="#168d7d">${rows[selected-1].score}${task.value==='docking'?'%':''}</text>`;
-      const current=rows[selected-1],unit=task.value==='docking'?'% docks':' jobs / episode';
+    let selected=1,rows=[],min=0,max=100;
+    const X=n=>62+(n-1)*620/9,Y=v=>220-(v-min)*155/(max-min);
+    function select(call,force=false){
+      if(call===selected&&!force)return;
+      selected=call;
+      const current=rows[selected-1],x=X(selected),scoreY=Y(current.score);
+      const band=svg.querySelector('.wsp-selected-band');
+      band.setAttribute('x',Math.max(44,x-620/18));
+      band.setAttribute('width',Math.min(704,x+620/18)-Math.max(44,x-620/18));
+      svg.querySelector('.wsp-selected-line').setAttribute('x1',x);
+      svg.querySelector('.wsp-selected-line').setAttribute('x2',x);
+      const label=svg.querySelector('.wsp-selected-label');
+      label.setAttribute('x',x+(selected>=9?-8:8));
+      label.setAttribute('y',Math.max(52,scoreY-12));
+      label.setAttribute('text-anchor',selected>=9?'end':'start');
+      label.textContent=`${current.score}${task.value==='docking'?'%':''}`;
+      svg.querySelectorAll('[data-call]').forEach(g=>{
+        const active=Number(g.dataset.call)===selected,point=g.querySelector('circle');
+        point.setAttribute('r',active?7:5);
+        point.setAttribute('fill',active?'#102131':'#168d7d');
+        point.setAttribute('stroke',active?'#168d7d':'none');
+        g.setAttribute('aria-current',active?'step':'false');
+      });
+      const unit=task.value==='docking'?'% docks':' jobs / episode';
       note.innerHTML=`<div class="wsp-tl-metrics"><strong>Call ${selected} of ${rows.length} · weights edited</strong><span>Practice <b>${current.score}${unit}</b></span><span>Unseen <b>${current.heldout}${unit}</b></span></div><div class="wsp-tl-brief"><small>What changed</small><p></p></div><details class="wsp-tl-record"><summary>Read the model’s submitted edit note</summary><p></p></details><small class="wsp-tl-provenance">Unseen scores were measured afterward and were never shown to the writer.</small>`;
       note.querySelector('.wsp-tl-brief p').textContent=current.brief;
       note.querySelector('.wsp-tl-record p').textContent=current.explanation||'No note submitted.';
-      svg.querySelectorAll('[data-call]').forEach(g=>{const choose=()=>{selected=Number(g.dataset.call);draw()};g.addEventListener('click',choose);g.addEventListener('pointerenter',choose);g.addEventListener('focus',choose);g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();choose()}})});
     }
+    function draw(){
+      rows=window.weightSpaceTimeline[task.value].slice(0,10);
+      min=task.value==='docking'?0:50;max=task.value==='docking'?100:65;
+      const ticks=task.value==='docking'?[0,25,50,75,100]:[50,55,60,65];
+      const line=rows.map(r=>`${X(r.call)},${Y(r.score)}`).join(' ');
+      const held=rows.filter(r=>r.heldout!==undefined),heldLine=held.map(r=>`${X(r.call)},${Y(r.heldout)}`).join(' ');
+      svg.innerHTML=`${ticks.map(v=>`<line x1="62" y1="${Y(v)}" x2="682" y2="${Y(v)}" stroke="#d8e1e2" stroke-width="1"/><text x="12" y="${Y(v)+4}">${v}${task.value==='docking'?'%':''}</text>`).join('')}<rect class="wsp-selected-band" y="47" height="205" fill="#dcefeb" opacity=".5"/><polyline points="${line}" fill="none" stroke="#168d7d" stroke-width="3" stroke-linejoin="round"/><polyline points="${heldLine}" fill="none" stroke="#84949b" stroke-width="2" stroke-dasharray="5 4"/>${held.map(r=>`<circle cx="${X(r.call)}" cy="${Y(r.heldout)}" r="3" fill="#84949b"/>`).join('')}${rows.map(r=>`<g data-call="${r.call}" tabindex="0" role="button" aria-label="Call ${r.call}, practice score ${r.score}"><line x1="${X(r.call)}" y1="238" x2="${X(r.call)}" y2="252" stroke="${r.weights_changed?'#d15452':'#aab9c0'}" stroke-width="2"/><circle cx="${X(r.call)}" cy="${Y(r.score)}" r="5" fill="#168d7d"/><text x="${X(r.call)}" y="267" text-anchor="middle">${r.call}</text></g>`).join('')}<line class="wsp-selected-line" y1="47" y2="220" stroke="#607783" stroke-dasharray="3 5"/><text class="wsp-selected-label" fill="#168d7d"></text>`;
+      svg.querySelectorAll('[data-call]').forEach(g=>{
+        const choose=()=>select(Number(g.dataset.call));
+        g.addEventListener('click',choose);
+        g.addEventListener('focus',choose);
+        g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();choose()}});
+      });
+      select(selected,true);
+    }
+    function pickArea(e){
+      const rect=svg.getBoundingClientRect();
+      const x=(e.clientX-rect.left)*720/rect.width,y=(e.clientY-rect.top)*270/rect.height;
+      if(x<44||x>704||y<45||y>255)return;
+      select(Math.max(1,Math.min(10,Math.round((x-62)*9/620)+1)));
+    }
+    svg.addEventListener('pointermove',pickArea);
+    svg.addEventListener('pointerdown',pickArea);
     task.addEventListener('change',()=>{selected=1;draw()});
     draw();
   }

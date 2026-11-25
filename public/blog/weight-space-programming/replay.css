@@ -120,3 +120,6 @@
 .wsp-tl-record summary{cursor:pointer;color:var(--accent)}
 .wsp-tl-record p{margin:7px 0 3px;line-height:1.5;color:var(--fg-2)}
 .wsp-tl-provenance{display:block;margin-top:7px;font-size:10px}
+
+.wsp-timeline svg{cursor:crosshair;touch-action:pan-y}
+.wsp-timeline svg [role=button]{cursor:crosshair}

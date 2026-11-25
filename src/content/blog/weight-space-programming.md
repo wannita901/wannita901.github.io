@@ -24,7 +24,7 @@ Can an LLM write a neural network's weights directly? Inspired by [weight-space 
 
 ## When the weights changed
 
-The writer edited the weights after every call shown. Hover or select a point to see a short description of the edit and expand the **model's submitted note**. That note is part of the recorded output, not private reasoning. The grey line shows 200-case unseen scores computed afterward; the writer never saw them. Each mint point is a 20-episode practice score.
+The writer edited the weights after every call shown. Move across the chart or select a call to see a short description of the edit and expand the **model's submitted note**. That note is part of the recorded output, not private reasoning. The grey line shows 200-case unseen scores computed afterward; the writer never saw them. Each mint point is a 20-episode practice score.
 
 <figure class="wsp-timeline" data-wsp-timeline aria-label="Weight edits and practice scores by evaluation call"><p>The timeline requires JavaScript.</p></figure>
 
@@ -39,7 +39,7 @@ The four **challenge families** each have 50 unseen variants:
 3. **Crossing debris:** three moving objects cross the approach.
 4. **Combined salvage:** collar, panel and debris together.
 
-The replay uses one rotatable 3D view; its corner axes each mark 3 m. The blue craft is the ghost ship, and the dashed outline is its collision boundary. The green trail bends when the controller changes approach stage. Objects that overlap on screen can be apart in depth; the caption gives the closest measured debris gap. The flight console shows the network's commands. Episodes play back to back, with a choice of checkpoint and challenge.
+The replay uses one rotatable 3D view with a 5 m grid across three perpendicular planes. The blue craft is the ghost ship, and the dashed outline is its collision boundary. The green trail bends when the controller changes approach stage. Objects that overlap on screen can be apart in depth; the caption gives the closest measured debris gap. The flight console shows the network's commands. Episodes play back to back, with a choice of checkpoint and challenge.
 
 <figure class="wsp-replay" data-wsp-replay="docking" aria-label="Spacecraft docking test replays"><p>The replay requires JavaScript.</p></figure>
 
