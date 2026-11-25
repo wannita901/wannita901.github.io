@@ -1,10 +1,10 @@
 ---
 title: "Writing motion into weights"
 subtitle: "Weight-space programming for motion control"
-date: 2026-11-25
+date: 2026-11-26
 description: "GPT-6 Astra wrote two tiny controllers directly as weights. Watch their recorded docking and warehouse decisions."
 tags: [llm, evaluation]
-draft: true
+draft: false
 wide: true
 css: ["/blog/weight-space-programming/replay.css"]
 js: ["/blog/weight-space-programming/timeline-data.js", "/blog/weight-space-programming/replay-v2.js"]
@@ -12,24 +12,22 @@ js: ["/blog/weight-space-programming/timeline-data.js", "/blog/weight-space-prog
 
 Can an LLM write useful neural-network weights without training? Inspired by [weight-space programming](https://rikiyat.github.io/blog/weight-space-programming/), I asked GPT-6 Astra to write two tiny controllers and revise them from simulator feedback.
 
-**Docking reached 200/200 unseen successes by call 7. Warehouse improved by just 1.4 on-time jobs per episode.** The useful change in docking was learning to get around a panel. In the warehouse, most of the improvement came when an aisle closed and a robot slowed down.
-
 - **Two networks:** 3,623 parameters (14.5 kB) for docking; 1,633 parameters (6.5 kB) for warehouse, counting float32 weights and biases.
 - **One attempt per task:** no training, web, or code tools for the writer. Each evaluation call tested 20 complete practice episodes.
 - **Unseen test:** 200 episodes per checkpoint, balanced across four challenge families. These scores were measured afterward and never shown to the writer.
-- This page follows the first ten calls of longer recorded runs. Results apply to these simulators and this one attempt per task.
+- This page follows the first ten calls of longer recorded runs. These results describe one attempt per task in these simulators.
 
 ## At a glance
 
-Move across the chart to follow the edits. Mint shows practice performance; grey shows the unseen tests. Each call includes the model's submitted edit note.
-
 <figure class="wsp-timeline" data-wsp-timeline aria-label="Weight edits and practice scores by evaluation call"><p>The timeline requires JavaScript.</p></figure>
+
+Docking reached **200/200 unseen successes by call 7**, after the controller learned to bypass the panel. Warehouse completed **1.4 more jobs on time per episode**, with most of the improvement in the closure and slowdown cases.
 
 ## Spacecraft docking
 
 1. Approach a moving collar from about 25 metres away.
 2. Clear the hull, attached panel, and crossing debris.
-3. Dock slowly and aligned. Holding safely does not count.
+3. Dock at low speed with the correct alignment. A safe hold does not count as docking.
 
 Four challenge families isolate collar motion, panel bypass, debris, and all three together. Each has 50 unseen variants. Drag the replay to inspect depth; the grid spacing is 5 m.
 
