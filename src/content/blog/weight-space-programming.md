@@ -27,6 +27,8 @@ The edits changed what the docking controller could do: it progressed from holdi
 
 ## Spacecraft docking
 
+**Network: `72 → 32 → 32 → 7`** (3,623 parameters). It reads 72 state values describing the spacecraft, target, fuel, and hazards. Two hidden layers of 32 neurons produce **three thrust commands, three rotation commands, and one hold/abort request**, updated every 0.2 seconds.
+
 1. Approach a moving collar from about 25 metres away.
 2. Clear the hull, attached panel, and crossing debris.
 3. Dock at low speed with the correct alignment. A safe hold does not count as docking.
@@ -44,7 +46,9 @@ Four challenge families isolate collar motion, panel bypass, debris, and all thr
 
 ## Warehouse traffic
 
-Six robots share nine junctions. The network ranks moves; a fixed safety layer blocks conflicts.
+Six robots share nine junctions.
+
+**Network: `16 → 32 → 32 → 1`** (1,633 parameters). For each candidate move—north, east, south, west, or wait—it reads 16 values about the route, deadline, and traffic. Two hidden layers of 32 neurons produce **one priority score**. The highest-scoring candidate at each junction is selected; a fixed safety layer rejects conflicting moves.
 
 1. Collect a storage pod.
 2. Carry it to a pick station for service.
